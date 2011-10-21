@@ -3,12 +3,13 @@ $:.push File.expand_path("../lib", __FILE__)
 # Maintain your gem's version:
 require "active_metric/version"
 
+
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "active_metric"
   s.version     = ActiveMetric::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
+  s.authors     = ["TODO: Your name", "Eric Jones", "Aldric Giacomoni", "Bob Nadler, Jr."]
+  s.email       = ["TODO: Your email", "ejones@cyrusinnovation.com", "trevoke@gmail.com", "TODO: Bob's email address"]
   s.homepage    = "TODO"
   s.summary     = "TODO: Summary of ActiveMetric."
   s.description = "TODO: Description of ActiveMetric."
@@ -17,6 +18,8 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 3.1.1"
+  s.add_dependency "mongoid"
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "mocha"
 end

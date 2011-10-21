@@ -2,9 +2,7 @@ require 'test_helper'
 
 module ActiveMetric
 
-  class MeasurementTest < ActiveSupport::TestCase
-
-    class TestMeasurement ; end
+  class MeasurementAndSubjectTest < ActiveSupport::TestCase
 
     setup do
       @measurement = TestMeasurement.new

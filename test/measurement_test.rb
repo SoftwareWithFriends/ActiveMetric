@@ -4,10 +4,6 @@ module ActiveMetric
 
   class MeasurementTest < ActiveSupport::TestCase
 
-    class TestMeasurement
-
-    end
-
     setup do
       @measurement = TestMeasurement.new
     end
@@ -23,8 +19,8 @@ module ActiveMetric
     test 'time returns datetime in seconds for timestamp' do
       @measurement.timestamp = 1318338826385
       assert_equal Time.at(1318338826), @measurement.time
-    end  
-    
+    end
+
     test "converts appropriate fields to integer" do
       assert_saves_as_integer @measurement, :timestamp
     end

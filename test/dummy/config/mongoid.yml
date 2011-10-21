@@ -1,0 +1,29 @@
+defaults: &defaults
+  host: localhost
+  port: 27017
+  
+development:
+  <<: *defaults
+  database: testify_development
+
+test:
+  <<: *defaults
+  database: testify_test
+
+
+staging:
+  <<: *defaults
+  database: testify_staging
+
+
+production:
+  host: perf5
+  port: 27017
+  username: <%= ENV['MONGOID_USERNAME'] %>
+  password: <%= ENV['MONGOID_PASSWORD'] %>
+  database: <%= ENV['MONGOID_DATABASE'] %>
+  # slaves:
+  #   - host: slave1.local
+  #     port: 27018
+  #   - host: slave2.local
+  #     port: 27019
