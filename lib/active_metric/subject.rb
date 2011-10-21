@@ -4,7 +4,7 @@ module ActiveMetric
     include Mongoid::Timestamps
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
-    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :sampleable
+    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
     field :name, :type => String
 
     def host
@@ -13,7 +13,7 @@ module ActiveMetric
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
-                   sample_type.create(:sampleable => self,
+                   sample_type.create(:samplable => self,
                                       :interval   => nil)
     end
 
@@ -36,7 +36,7 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= interval_samples.last ||
-                          sample_type.create(:sampleable => self,
+                          sample_type.create(:samplable => self,
                                              :interval   => interval_length)
     end
 

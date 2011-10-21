@@ -2,7 +2,7 @@ module ActiveMetric
   class Sample
     include Mongoid::Document
 
-    belongs_to :sampleable, :polymorphic => true
+    belongs_to :samplable, :polymorphic => true
 
     embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true
 
@@ -86,7 +86,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.create(:sampleable => self.sampleable, :interval => interval)
+      self.class.create(:samplable => self.samplable, :interval => interval)
     end
 
     def self.stats_defined

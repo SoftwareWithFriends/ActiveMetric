@@ -47,7 +47,7 @@ module ActiveMetric
     end
 
     def subject
-      self.calculable.sampleable
+      self.calculable.samplable
     end
 
   end

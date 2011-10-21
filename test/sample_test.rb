@@ -50,7 +50,7 @@ module ActiveMetric
                       TestMeasurement.create(:value => 11, :timestamp => 9)]
 
       subject = TestSubject.create
-      sample = TestSample.create(:sampleable => subject)
+      sample = TestSample.create(:samplable => subject)
       measurements.each do |measurement|
         sample.calculate(measurement)
       end

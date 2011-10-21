@@ -5,7 +5,7 @@ module ActiveMetric
 
     setup do
       @subject = TestSubject.create
-      @sample = TestSample.create(:sampleable => @subject)
+      @sample = TestSample.create(:samplable => @subject)
       @stat = TestStat.new :thing_to_measure, :calculable => @sample
     end
 
@@ -61,7 +61,7 @@ module ActiveMetric
 
     test "has subject" do
       subject = TestSubject.create
-      sample = TestSample.create(:sampleable => subject)
+      sample = TestSample.create(:samplable => subject)
       assert_equal subject, sample.stats.first.subject
     end
 
