@@ -80,7 +80,6 @@ module ActiveMetric
 
     def update_stats(measurement)
       self.stats.each do |stat|
-        Rails.logger.error "\n\n PERFORMING CALC FOR STAT: #{stat.thing_to_measure}\n\n"
         stat.calculate(measurement)
       end
     end
@@ -97,9 +96,9 @@ module ActiveMetric
       @custom_stats_defined ||= []
     end
 
-    def self.stat(thing_to_measure, stats_to_define = [:min, :mean, :max, :eightieth, :ninety_eighth])
+    def self.stat(property, stats_to_define = [:min, :mean, :max, :eightieth, :ninety_eighth])
       stats_to_define.each do |stat|
-        self.stats_defined << {:klass => Stat.class_for(stat), :name_of_stat => thing_to_measure }
+        self.stats_defined << {:klass => Stat.class_for(stat), :name_of_stat => property }
       end
     end
 

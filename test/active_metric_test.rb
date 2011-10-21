@@ -5,7 +5,4 @@ class ActiveMetricTest < ActiveSupport::TestCase
     assert_kind_of Module, ActiveMetric
   end
 
-  test "Version" do
-    assert_equal "0.0.1", ActiveMetric::VERSION
-  end
 end

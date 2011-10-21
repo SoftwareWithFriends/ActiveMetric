@@ -7,10 +7,6 @@ module ActiveMetric
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
     field :name, :type => String
 
-    def host
-      TestRun.find(self.report.test_run_id).host
-    end
-
     def summary
       @summary ||= samples.where(:interval => nil).first ||
                    sample_type.create(:samplable => self,
@@ -22,9 +18,7 @@ module ActiveMetric
     end
 
     def calculate(measurement)
-      Rails.logger.error "\n\nBEFORE SUMMARY\n\n"
       summary.calculate(measurement)
-      Rails.logger.error "\n\nBEFORE CURRENT SAMPLE\n\n"
       @current_sample = current_sample.calculate(measurement)
     end
 

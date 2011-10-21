@@ -6,16 +6,16 @@ module ActiveMetric
 
     embedded_in :calculable, :polymorphic => true
     field :value, :type => Float, :default => 0
-    field :thing_to_measure, :type => String
+    field :property, :type => String
 
-    def initialize(thing_to_measure, *args)
+    def initialize(property, *args)
       super(*args)
-      self.thing_to_measure = thing_to_measure
+      self.property = property
     end
 
     def access_name
       title = self.class.name.split("::").last.underscore
-      title += "_#{self.thing_to_measure}" unless self.kind_of? Custom
+      title += "_#{self.property}" unless self.kind_of? Custom
       title.to_sym
     end
 
@@ -34,7 +34,7 @@ module ActiveMetric
     def self.create_custom_stat(name_of_stat, value_type, default, calculate_block)
       class_name = name_of_stat.to_s.camelcase
       if ActiveMetric.const_defined?(class_name)
-        Rails.logger.warn "\n\n#{class_name} is already defined. Not redefining it.\n\n"
+        Rails.logger.warn "\n\n#{class_name} is already defined. It won't be defined again.\n\n"
         return ActiveMetric.const_get(class_name)
       end
       klass = Class.new(Custom) do
@@ -57,15 +57,15 @@ module ActiveMetric
   end
 
   class Min < Stat
-    field :value, :type => Float, :default => 1073741823
+    field :value, :type => Float, :default => (1 << 64)
     def calculate(measurement)
-      self.value = [self.value, measurement.send(self.thing_to_measure)].min
+      self.value = [self.value, measurement.send(self.property)].min
     end
   end
 
   class Max < Stat
     def calculate(measurement)
-      self.value = [self.value, measurement.send(self.thing_to_measure)].max
+      self.value = [self.value, measurement.send(self.property)].max
     end
   end
 
@@ -75,7 +75,7 @@ module ActiveMetric
 
     def calculate(measurement)
       self.count +=  1
-      self.sum   +=  measurement.send(self.thing_to_measure)
+      self.sum   +=  measurement.send(self.property)
     end
 
     def complete
@@ -90,8 +90,8 @@ module ActiveMetric
       self.measurement_class ||= measurement.class.name
     end
     def complete
-      measurement = eval(self.measurement_class.classify).eightieth(subject, self.thing_to_measure.to_sym).first if self.measurement_class
-      self.value = measurement.send(self.thing_to_measure) if measurement
+      measurement = eval(self.measurement_class.classify).eightieth(subject, self.property.to_sym).first if self.measurement_class
+      self.value = measurement.send(self.property) if measurement
       super
     end
   end
@@ -102,8 +102,8 @@ module ActiveMetric
       self.measurement_class ||= measurement.class.name
     end
     def complete
-      measurement =  eval(self.measurement_class.classify).ninety_eighth(subject, self.thing_to_measure.to_sym).first if self.measurement_class
-      self.value = measurement.send(self.thing_to_measure) if measurement
+      measurement =  eval(self.measurement_class.classify).ninety_eighth(subject, self.property.to_sym).first if self.measurement_class
+      self.value = measurement.send(self.property) if measurement
       super
     end
   end

@@ -6,7 +6,7 @@ module ActiveMetric
     setup do
       @subject = TestSubject.create
       @sample = TestSample.create(:samplable => @subject)
-      @stat = TestStat.new :thing_to_measure, :calculable => @sample
+      @stat = TestStat.new :property, :calculable => @sample
     end
 
     test "create a new stat" do
@@ -24,18 +24,18 @@ module ActiveMetric
     end
 
     test "has a dynamically defined name" do
-      assert_equal :test_stat_thing_to_measure, @stat.access_name
+      assert_equal :test_stat_property, @stat.access_name
     end
 
     test "sets name for custom stat" do
       proc = Proc.new {|m|self.value = m.value}
-      stat = Stat.create_custom_stat(:thing_to_measure,Integer,{},proc).new(:thing_to_measure)
-      assert_equal :thing_to_measure, stat.access_name
+      stat = Stat.create_custom_stat(:property,Integer,{},proc).new(:property)
+      assert_equal :property, stat.access_name
     end
 
     test "custom stat uses block to calculate" do
       proc = Proc.new {|m| self.value = m.value}
-      stat = Stat.create_custom_stat(:thing_to_measure,Integer,{}, proc).new(:thing_to_measure)
+      stat = Stat.create_custom_stat(:property,Integer,{}, proc).new(:property)
       measurement = mock(:value => 10)
       stat.calculate(measurement)
       assert_equal 10, stat.value

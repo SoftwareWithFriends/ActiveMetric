@@ -1,9 +1,8 @@
 module ActiveMetric
-  XYZ = "Yes!"
 
   class Measurement
     include Mongoid::Document
-    index [[:subject_ids,1]]
+    index [[:subject_ids, 1]]
 
     belongs_to :reporter, :polymorphic => true
     has_and_belongs_to_many :subjects, :class_name => "ActiveMetric::Subject"
