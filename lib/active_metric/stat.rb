@@ -4,7 +4,7 @@ module ActiveMetric
   class Stat
     include Mongoid::Document
 
-    embedded_in :calculable, :polymorphic => true #TODO rename this to "calculatable"
+    embedded_in :calculable, :polymorphic => true
     field :value, :type => Float, :default => 0
     field :thing_to_measure, :type => String
 

@@ -20,7 +20,6 @@ module ActiveMetric
       sample = TestSample.create
       sample.calculate TestMeasurement.create(:value => 10, :timestamp => 1234)
       sample.save!
-      #sample = TestSample.find sample.id
       assert_equal 10, sample.min_value.value
     end
 
