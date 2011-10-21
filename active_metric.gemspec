@@ -8,9 +8,9 @@ require "active_metric/version"
 Gem::Specification.new do |s|
   s.name        = "active_metric"
   s.version     = ActiveMetric::VERSION
-  s.authors     = ["TODO: Your name", "Eric Jones", "Aldric Giacomoni", "Bob Nadler, Jr."]
-  s.email       = ["TODO: Your email", "ejones@cyrusinnovation.com", "trevoke@gmail.com", "TODO: Bob's email address"]
-  s.homepage    = "TODO"
+  s.authors     = ["Ryan McGarvey", "Eric Jones", "Aldric Giacomoni", "Bob Nadler, Jr."]
+  s.email       = ["ryan@simplical.com", "ejones@cyrusinnovation.com", "trevoke@gmail.com", ""]
+  s.homepage    = "http://github.com/ryanmcgvarvey/activemetric"
   s.summary     = "TODO: Summary of ActiveMetric."
   s.description = "TODO: Description of ActiveMetric."
 
