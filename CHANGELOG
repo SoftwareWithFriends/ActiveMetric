@@ -1,0 +1,5 @@
+0.1.0 (Oct 21 2011)
+    Renamed "thing_to_measure" to "property"
+    Removed "host" method from Subject because it really belongs in the original app.
+    Removed reference to test_run_id because it really belongs in the original app.
+    Changed min default value to 1 << 64 because that's really big. It _is_ what she said.
