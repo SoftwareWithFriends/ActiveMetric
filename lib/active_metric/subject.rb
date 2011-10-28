@@ -3,18 +3,26 @@ module ActiveMetric
     include Mongoid::Document
     include Mongoid::Timestamps
 
+    #@interval_length = 5
+    #@sample_type     = nil
+    #
+    #
+    #class << self
+    #  attr_accessor :sample_type, :interval_length
+    #end
+
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
     field :name, :type => String
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
-                   sample_type.create(:samplable => self,
+                   self.class.sample_type.create(:samplable => self,
                                       :interval   => nil)
     end
 
     def interval_samples
-      samples.where(:interval => interval_length)
+      samples.where(:interval => self.class.interval_length)
     end
 
     def calculate(measurement)
@@ -30,8 +38,8 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= interval_samples.last ||
-                          sample_type.create(:samplable => self,
-                                             :interval   => interval_length)
+                          self.class.sample_type.create(:samplable => self,
+                                             :interval   => self.class.interval_length)
     end
 
     def headers_for_table
@@ -42,23 +50,30 @@ module ActiveMetric
 
     end
 
-    private
 
     def interval_samples_query
-      samples.where(:interval => interval_length)
+      samples.where(:interval => self.class.interval_length)
     end
 
-    def sample_type
-      @@sample_type ||= ActiveMetric::Sample
+
+    def self.sample_type
+      raise
     end
 
-    def interval_length
-      @@interval_length ||= 5
+    def self.interval_length
+      raise
     end
 
     def self.calculated_with(sample_type, interval_length)
-      @@sample_type = sample_type
-      @@interval_length = interval_length
+      instance_eval %Q|
+        def self.sample_type
+          #{sample_type}
+        end
+
+        def self.interval_length
+          #{interval_length}
+        end
+      |
     end
 
   end

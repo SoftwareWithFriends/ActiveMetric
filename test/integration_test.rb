@@ -9,8 +9,8 @@ module ActiveMetric
     end
 
     test "has many subjects" do
-      subject1 = Subject.create
-      subject2 = Subject.create
+      subject1 = TestSubject.create
+      subject2 = TestSubject.create
       subjects = [subject1, subject2]
       @measurement.subjects.concat subjects
       @measurement.save!
@@ -22,8 +22,8 @@ module ActiveMetric
     end
 
     test "scopes by subject" do
-      subject  = Subject.create
-      subject2 = Subject.create
+      subject  = TestSubject.create
+      subject2 = TestSubject.create
       2.times do |value|
         TestMeasurement.create(:subjects => [subject],  :value => 100 - value, :timestamp => value)
       end 
@@ -35,8 +35,8 @@ module ActiveMetric
 
     test "can calculate correct eightieth percentile for subject" do
       report = Report.create
-      subject = report.subjects.create
-      subject2 = report.subjects.create
+      subject = TestSubject.create :report => report
+      subject2 = TestSubject.create :report => report
       10.times do |value|
         subject.calculate TestMeasurement.create(:subjects => [subject],  :value => 100 - value, :timestamp => value)
       end
@@ -45,14 +45,15 @@ module ActiveMetric
       end
       subject2.complete
       subject.complete
+      p subject.summary.class
       assert_equal 99, subject.summary.eightieth_value.value
       assert_equal 199, subject2.summary.eightieth_value.value
     end
 
     test "can calculate correct ninety eighth percentile for subject" do
       report = Report.create
-      subject = report.subjects.create
-      subject2 = report.subjects.create
+      subject = TestSubject.create :report => report
+      subject2 = TestSubject.create :report => report
       5.times do |value|
         subject.calculate TestMeasurement.create(:subjects => [subject],  :value => 100 - value, :timestamp => value)
       end
@@ -70,8 +71,8 @@ module ActiveMetric
 
     test "can calculate correct percentiles with multiple subjects" do
       report = Report.create
-      subject = report.subjects.create
-      subject2 = report.subjects.create
+      subject = TestSubject.create :report => report
+      subject2 = TestSubject.create :report => report
       5.times do |value|
         subject.calculate TestMeasurement.create(:subjects => [subject],  :value => 100 - value, :timestamp => value)
       end
