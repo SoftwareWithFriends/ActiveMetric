@@ -21,7 +21,7 @@ module ActiveMetric
 
   class TestSample < Sample
     stat :value
-    custom_stat :test_count, Integer, 0 do |measurement|
+    custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
     end
     custom_stat :test_response_codes, Hash, {} do |measurement|
@@ -33,5 +33,13 @@ module ActiveMetric
   class TestSubject < Subject
     calculated_with TestSample, INTERVAL_LENGTH
   end
+
+end
+
+class ActiveSupport::TestCase
+
+    def assert_within_range(range, value)
+      assert range === value, "Expected #{value} to be within #{range}"
+    end
 
 end

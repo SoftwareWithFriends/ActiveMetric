@@ -74,9 +74,5 @@ module ActiveMetric
       sample.complete
     end
 
-
-
-
-
   end
 end

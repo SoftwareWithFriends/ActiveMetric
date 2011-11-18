@@ -2,23 +2,21 @@ module ActiveMetric
   class Subject
     include Mongoid::Document
     include Mongoid::Timestamps
-
-    #@interval_length = 5
-    #@sample_type     = nil
-    #
-    #
-    #class << self
-    #  attr_accessor :sample_type, :interval_length
-    #end
+    include GraphCalculation
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
-    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
+    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
     field :name, :type => String
+    field :series_data, :type => Hash
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
-                   self.class.sample_type.create(:samplable => self,
-                                      :interval   => nil)
+          self.class.sample_type.create(:samplable => self,
+                                        :interval   => nil)
+    end
+
+    def reservoir
+      @reservoir ||= Reservoir.new(2000)
     end
 
     def interval_samples
@@ -28,6 +26,7 @@ module ActiveMetric
     def calculate(measurement)
       summary.calculate(measurement)
       @current_sample = current_sample.calculate(measurement)
+      reservoir.fill(measurement)
     end
 
     def complete
@@ -38,8 +37,8 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= interval_samples.last ||
-                          self.class.sample_type.create(:samplable => self,
-                                             :interval   => self.class.interval_length)
+          self.class.sample_type.create(:samplable => self,
+                                        :interval   => self.class.interval_length)
     end
 
     def headers_for_table
@@ -50,11 +49,9 @@ module ActiveMetric
 
     end
 
-
     def interval_samples_query
       samples.where(:interval => self.class.interval_length)
     end
-
 
     def self.sample_type
       raise
@@ -75,6 +72,8 @@ module ActiveMetric
         end
       |
     end
+
+
 
   end
 end
