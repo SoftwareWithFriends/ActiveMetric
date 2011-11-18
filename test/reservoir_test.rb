@@ -35,12 +35,12 @@ module ActiveMetric
       end
 
       assert_equal 2,  @reservoir.calculate_percentile(0.1)
-      assert_equal 4, @reservoir.calculate_percentile(0.2)
+      assert_equal 4,  @reservoir.calculate_percentile(0.2)
       assert_equal 6,  @reservoir.calculate_percentile(0.3)
       assert_equal 8,  @reservoir.calculate_percentile(0.4)
-      assert_equal 11,  @reservoir.calculate_percentile(0.5)
-      assert_equal 13,  @reservoir.calculate_percentile(0.6)
-      assert_equal 15,  @reservoir.calculate_percentile(0.7)
+      assert_equal 11, @reservoir.calculate_percentile(0.5)
+      assert_equal 13, @reservoir.calculate_percentile(0.6)
+      assert_equal 15, @reservoir.calculate_percentile(0.7)
       assert_equal 17, @reservoir.calculate_percentile(0.8)
       assert_equal 19, @reservoir.calculate_percentile(0.9)
     end
