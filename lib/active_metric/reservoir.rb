@@ -23,10 +23,15 @@ module ActiveMetric
     def calculate_percentile(percentile, metric)
       @sorted_measurements[metric.to_sym] ||= measurements.sort_by(&metric.to_sym)
       index = size_for_calculation * percentile
-      @sorted_measurements[metric.to_sym][index].send(metric)
+      info("index for #{percentile}: #{index}")
+      @sorted_measurements[metric.to_sym][index].send(metric.to_sym)
     end
 
     private
+
+    def info(string_to_log)
+      Rails.logger.info string_to_log if Rails
+    end
 
     def update_reservoir_at_current_index(measurement)
       @measurements[@current_index] = measurement
