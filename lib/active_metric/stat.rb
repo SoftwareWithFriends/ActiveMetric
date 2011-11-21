@@ -121,7 +121,7 @@ module ActiveMetric
     def calculate(measurement)
     end
     def complete
-      self.value = subject.reservoir.calculate_percentile(0.8,self.property)
+      self.value = subject.reservoir.calculate_percentile(0.98,self.property)
       super
     end
   end
