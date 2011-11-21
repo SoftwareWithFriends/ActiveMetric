@@ -56,6 +56,14 @@ module ActiveMetric
       @stats_by_name ||= generate_stats_by_name
     end
 
+    def stat_data
+      data = []
+      stats.each do |stat|
+        data << {:name => stat.access_name, :axis => 1}
+      end
+      data
+    end
+
     private
 
     def generate_stats_by_name
@@ -110,12 +118,6 @@ module ActiveMetric
                                                                block)}
     end
 
-    def stat_data
-      data = []
-      stats.each do |stat|
-        data << {:name => stat.access_name, :axis => 1}
-      end
-      data
-    end
+
   end
 end
