@@ -23,7 +23,7 @@ module ActiveMetric
     def calculate_percentile(percentile, metric)
       @sorted_measurements[metric.to_sym] ||= measurements.sort_by(&metric.to_sym)
       index = size_for_calculation * percentile
-      info("index for #{percentile}: #{index}")
+      info("index for #{percentile}: #{index} with total collection #{measurements.size} and sub collection #{@sorted_measurements[metric.to_sym].size}")
       @sorted_measurements[metric.to_sym][index].send(metric.to_sym)
     end
 
