@@ -79,7 +79,7 @@ module ActiveMetric
 
         interval_samples.each do |sample|
           stat = sample.stats_by_name[datum[:name]]
-          data << [time(sample.timestamp), stat.value]
+          data << [time(sample.timestamp), stat.value] if sample.timestamp
         end
 
         series << {:name => datum[:name], :data => data, :yAxis => datum[:axis]}

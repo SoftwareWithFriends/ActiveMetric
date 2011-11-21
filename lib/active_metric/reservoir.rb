@@ -46,7 +46,7 @@ module ActiveMetric
 
     def should_replace_at_current_index?
       chance = (@current_index.to_f / size_for_calculation.to_f) * 100
-      replace = rand(chance) <= 100 / @current_round
+      replace = rand(chance) <= (100.0 / @current_round.to_f)
       replace ? @true_count +=1 : @false_count += 1
       replace
     end
