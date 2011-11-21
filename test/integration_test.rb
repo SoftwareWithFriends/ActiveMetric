@@ -109,6 +109,19 @@ module ActiveMetric
       assert_within_threshold threshold, actual, estimated
     end
 
+    test "can calculate series" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      10.times do |value|
+        subject.calculate TestMeasurement.create(:subjects => [subject], :value => value % 100, :timestamp => value)
+      end
+
+      subject.complete
+
+      report.series.each {|s| p s}
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)

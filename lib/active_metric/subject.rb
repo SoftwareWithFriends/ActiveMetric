@@ -74,6 +74,7 @@ module ActiveMetric
     def series
       series = []
       summary.stat_data.each do |datum|
+        next if datum[:axis] < 0
         data = []
 
         interval_samples.each do |sample|

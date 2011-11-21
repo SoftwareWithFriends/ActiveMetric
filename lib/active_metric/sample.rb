@@ -59,7 +59,7 @@ module ActiveMetric
     def stat_data
       data = []
       stats.each do |stat|
-        data << {:name => stat.access_name, :axis => 1}
+        data << {:name => stat.access_name, :axis => stat.axis}
       end
       data
     end
@@ -110,11 +110,12 @@ module ActiveMetric
       end
     end
 
-    def self.custom_stat(name_of_stat, value_type,default = nil, &block)
+    def self.custom_stat(name_of_stat, value_type,default = nil, axis = -1, &block)
       self.stats_defined << {:name_of_stat => name_of_stat,
                              :klass => Stat.create_custom_stat(name_of_stat,
                                                                value_type,
                                                                default,
+                                                               axis,
                                                                block)}
     end
 
