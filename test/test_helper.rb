@@ -20,7 +20,8 @@ module ActiveMetric
   end
 
   class TestSample < Sample
-    stat :value
+    #stat :value
+    stat :value, [:estimated_eightieth, :eightieth]
     custom_stat :test_count, Integer, 0 do |measurement|
       self.value += 1
     end
@@ -33,5 +34,13 @@ module ActiveMetric
   class TestSubject < Subject
     calculated_with TestSample, INTERVAL_LENGTH
   end
+
+end
+
+class ActiveSupport::TestCase
+
+    def assert_within_range(range, value)
+      assert range === value, "Expected #{value} to be within #{range}"
+    end
 
 end

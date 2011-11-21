@@ -108,4 +108,22 @@ module ActiveMetric
     end
   end
 
+  class EstimatedEightieth < Stat
+    def calculate(measurement)
+    end
+    def complete
+      self.value = subject.reservoir.calculate_percentile(0.8,self.property)
+      super
+    end
+  end
+
+  class EstimatedEightieth < Stat
+    def calculate(measurement)
+    end
+    def complete
+      self.value = subject.reservoir.calculate_percentile(0.8,self.property)
+      super
+    end
+  end
+
 end

@@ -3,14 +3,6 @@ module ActiveMetric
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    #@interval_length = 5
-    #@sample_type     = nil
-    #
-    #
-    #class << self
-    #  attr_accessor :sample_type, :interval_length
-    #end
-
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
     field :name, :type => String
@@ -21,6 +13,10 @@ module ActiveMetric
                                       :interval   => nil)
     end
 
+    def reservoir
+      @reservoir ||= Reservoir.new(2000)
+    end
+
     def interval_samples
       samples.where(:interval => self.class.interval_length)
     end
@@ -28,6 +24,7 @@ module ActiveMetric
     def calculate(measurement)
       summary.calculate(measurement)
       @current_sample = current_sample.calculate(measurement)
+      reservoir.fill(measurement)
     end
 
     def complete
@@ -54,7 +51,6 @@ module ActiveMetric
     def interval_samples_query
       samples.where(:interval => self.class.interval_length)
     end
-
 
     def self.sample_type
       raise
