@@ -117,7 +117,7 @@ module ActiveMetric
     end
   end
 
-  class EstimatedEightieth < Stat
+  class EstimatedNinetyEighth < Stat
     def calculate(measurement)
     end
     def complete
