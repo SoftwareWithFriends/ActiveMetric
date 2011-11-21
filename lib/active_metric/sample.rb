@@ -4,7 +4,7 @@ module ActiveMetric
 
     belongs_to :samplable, :polymorphic => true
 
-    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true, :dependent => :destroy
+    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true
 
     field :interval,          :type => Integer, :default => nil
     field :start_time,        :type => Integer

@@ -3,8 +3,8 @@ module ActiveMetric
     include Mongoid::Document
     include Mongoid::Timestamps
 
-    belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true, :dependent => :destroy
-    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable
+    belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
+    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
     field :name, :type => String
 
     def summary
