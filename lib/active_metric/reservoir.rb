@@ -1,14 +1,19 @@
 module ActiveMetric
   class Reservoir
 
-    attr_reader :size
+    attr_reader :size, :current_round, :false_count, :true_count
     attr_accessor :measurements
+
+    THRESHOLD = 10
 
     def initialize(size)
       @size = size
       @measurements = []
       @current_index = 0
       @sorted_measurements = {}
+      @false_count=  0
+      @true_count = 0
+      @current_round = 1
     end
 
     def fill(measurement)
@@ -40,12 +45,23 @@ module ActiveMetric
     end
 
     def should_replace_at_current_index?
-      rand(@current_index + 1) == 0
+      chance = (@current_index.to_f / size_for_calculation.to_f) * 100
+      replace = rand(chance) <= 100 / @current_round
+      replace ? @true_count +=1 : @false_count += 1
+      replace
+    end
+
+    def simulate_chance(chance)
+      rand + (1-chance) >= 1
     end
 
     def update_index
-      if @current_index == size - 1
+      if @current_index >= size - 1
         @current_index = 0
+        @current_round+= 1
+        @true_count = 0
+        @false_count = 0
+
       else
         @current_index+= 1
       end

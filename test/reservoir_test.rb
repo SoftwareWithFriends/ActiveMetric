@@ -45,16 +45,22 @@ module ActiveMetric
     end
 
     test "is performant and accurate" do
-      big_reservoir = Reservoir.new 10000
+      big_reservoir = Reservoir.new 1000
 
       measurements = []
-      100000.times do |value|
-        measurements <<  create_measurement(value % 1000)
+      1999.times do |value|
+        measurements <<  create_measurement(value % 100)
       end
 
-      shuffle(measurements)
-      measurements.each do |m|
-        big_reservoir.fill m
+      10.times do
+        shuffle(measurements)
+        measurements.each do |m|
+          big_reservoir.fill m
+        end
+        #assert_within_range (790..810), big_reservoir.calculate_percentile(0.8, :value)
+        p "true: #{big_reservoir.true_count}"
+        p "false: #{big_reservoir.false_count}"
+        p big_reservoir.calculate_percentile(0.8, :value)
       end
 
       assert_within_range  (90..110), big_reservoir.calculate_percentile(0.1, :value)
