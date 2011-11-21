@@ -73,13 +73,14 @@ module ActiveMetric
 
     def series
       series = []
+      @start_time = summary.start_time
       summary.stat_data.each do |datum|
         next if datum[:axis] < 0
         data = []
 
         interval_samples.each do |sample|
           stat = sample.stats_by_name[datum[:name]]
-          data << [time(sample.timestamp), stat.value] if sample.timestamp
+          data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
         end
 
         series << {:name => datum[:name], :data => data, :yAxis => datum[:axis]}
@@ -88,7 +89,7 @@ module ActiveMetric
     end
 
     def time(sample_time)
-      @start_time ||= summary.start_time
+
       ((sample_time - @start_time)).to_i
     end
 
