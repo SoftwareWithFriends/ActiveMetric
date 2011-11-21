@@ -9,8 +9,8 @@ module ActiveMetric
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
-                   self.class.sample_type.create(:samplable => self,
-                                      :interval   => nil)
+          self.class.sample_type.create(:samplable => self,
+                                        :interval   => nil)
     end
 
     def reservoir
@@ -35,8 +35,8 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= interval_samples.last ||
-                          self.class.sample_type.create(:samplable => self,
-                                             :interval   => self.class.interval_length)
+          self.class.sample_type.create(:samplable => self,
+                                        :interval   => self.class.interval_length)
     end
 
     def headers_for_table
@@ -46,7 +46,6 @@ module ActiveMetric
       end
 
     end
-
 
     def interval_samples_query
       samples.where(:interval => self.class.interval_length)
@@ -70,6 +69,26 @@ module ActiveMetric
           #{interval_length}
         end
       |
+    end
+
+    def series
+      series = []
+      summary.stat_data.each do |datum|
+        data = []
+
+        interval_samples.each do |sample|
+          stat = sample.stats_by_name[datum[:name]]
+          data << [time(sample.timestamp), stat.value]
+        end
+
+        series << {:name => datum[:name], :data => data, :yAxis => datum[:axis]}
+      end
+      series
+    end
+
+    def time(sample_time)
+      @start_time ||= summary.start_time
+      ((sample_time - @start_time)).to_i
     end
 
   end

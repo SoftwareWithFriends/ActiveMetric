@@ -104,10 +104,18 @@ module ActiveMetric
 
     def self.custom_stat(name_of_stat, value_type,default = nil, &block)
       self.stats_defined << {:name_of_stat => name_of_stat,
-                        :klass => Stat.create_custom_stat(name_of_stat,
-                                                          value_type,
-                                                          default,
-                                                          block)}
+                             :klass => Stat.create_custom_stat(name_of_stat,
+                                                               value_type,
+                                                               default,
+                                                               block)}
+    end
+
+    def stat_data
+      data = []
+      stats.each do |stat|
+        data << {:name => stat.access_name, :axis => 1}
+      end
+      data
     end
   end
 end

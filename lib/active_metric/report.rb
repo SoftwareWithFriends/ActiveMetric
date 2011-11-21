@@ -8,5 +8,9 @@ module ActiveMetric
       "report"
     end
 
+    def series
+      subjects.map(&:series).flatten
+    end
+
   end
 end
