@@ -12,6 +12,7 @@ module ActiveMetric
     end
 
     def fill(measurement)
+      info "Filling with measurement. Index #{@current_index}"
       if reservoir_full?
         update_reservoir_at_current_index(measurement) if should_replace_at_current_index?
       else
