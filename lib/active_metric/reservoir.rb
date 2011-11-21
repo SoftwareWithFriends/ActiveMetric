@@ -12,7 +12,6 @@ module ActiveMetric
     end
 
     def fill(measurement)
-      info "Filling with measurement. Index #{@current_index}"
       if reservoir_full?
         update_reservoir_at_current_index(measurement) if should_replace_at_current_index?
       else
@@ -22,6 +21,7 @@ module ActiveMetric
     end
 
     def calculate_percentile(percentile, metric)
+      return 0 unless size_for_calculation > 0
       @sorted_measurements[metric.to_sym] ||= measurements.sort_by(&metric.to_sym)
       index = size_for_calculation * percentile
       info("index for #{percentile}: #{index} with total collection #{measurements.size} and sub collection #{@sorted_measurements[metric.to_sym].size}")
