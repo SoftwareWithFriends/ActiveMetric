@@ -48,7 +48,7 @@ module ActiveMetric
       big_reservoir = Reservoir.new 1000
 
       measurements = []
-      1999.times do |value|
+      1.times do |value|
         measurements <<  create_measurement(value % 100)
       end
 
@@ -58,9 +58,9 @@ module ActiveMetric
           big_reservoir.fill m
         end
         #assert_within_range (790..810), big_reservoir.calculate_percentile(0.8, :value)
-        p "true: #{big_reservoir.true_count}"
-        p "false: #{big_reservoir.false_count}"
-        p big_reservoir.calculate_percentile(0.8, :value)
+        #p "true: #{big_reservoir.true_count}"
+        #p "false: #{big_reservoir.false_count}"
+        #p big_reservoir.calculate_percentile(0.8, :value)
       end
 
       assert_within_range  (90..110), big_reservoir.calculate_percentile(0.1, :value)

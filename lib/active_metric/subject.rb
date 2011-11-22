@@ -80,8 +80,8 @@ module ActiveMetric
 
     def generate_series_data
       self.series_data ||= {}
-      sample_skip = self.series_data.size
       @start_time = summary.start_time
+
 
       summary.stat_data.each do |datum|
         next if datum[:axis] < 0
@@ -89,7 +89,14 @@ module ActiveMetric
         name = datum[:name]
         axis = datum[:axis]
 
+        
+        if self.series_data[name]
+          sample_skip = self.series_data[name][:data].size
+        else
+          sample_skip = 0
+        end
         Rails.logger.info "\nskipping #{sample_skip}\n"
+
         interval_samples.skip(sample_skip).each do |sample|
           stat = sample.stats_by_name[datum[:name]]
           data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
@@ -104,7 +111,6 @@ module ActiveMetric
     end
 
     def time(sample_time)
-
       ((sample_time - @start_time)).to_i
     end
 

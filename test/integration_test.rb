@@ -119,7 +119,9 @@ module ActiveMetric
 
       subject.complete
 
-      report.series.each {|s| p s}
+      report.subjects.each do |subject|
+        p subject.series
+      end
     end
 
     private
