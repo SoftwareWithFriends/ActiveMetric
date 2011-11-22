@@ -91,30 +91,6 @@ module ActiveMetric
   end
 
   class Eightieth < Stat
-    field :measurement_class, :type => String
-    def calculate(measurement)
-      self.measurement_class ||= measurement.class.name
-    end
-    def complete
-      measurement = eval(self.measurement_class.classify).eightieth(subject, self.property.to_sym).first if self.measurement_class
-      self.value = measurement.send(self.property) if measurement
-      super
-    end
-  end
-
-  class NinetyEighth < Stat
-    field :measurement_class, :type => String
-    def calculate(measurement)
-      self.measurement_class ||= measurement.class.name
-    end
-    def complete
-      measurement =  eval(self.measurement_class.classify).ninety_eighth(subject, self.property.to_sym).first if self.measurement_class
-      self.value = measurement.send(self.property) if measurement
-      super
-    end
-  end
-
-  class EstimatedEightieth < Stat
     def calculate(measurement)
     end
     def complete
@@ -123,7 +99,7 @@ module ActiveMetric
     end
   end
 
-  class EstimatedNinetyEighth < Stat
+  class NinetyEighth < Stat
     def calculate(measurement)
     end
     def complete
@@ -131,5 +107,7 @@ module ActiveMetric
       super
     end
   end
+
+
 
 end

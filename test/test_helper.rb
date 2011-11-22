@@ -21,7 +21,6 @@ module ActiveMetric
 
   class TestSample < Sample
     stat :value
-    stat :value, [:estimated_eightieth, :eightieth]
     custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
     end

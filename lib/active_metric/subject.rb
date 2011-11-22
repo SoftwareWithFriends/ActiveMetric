@@ -83,8 +83,6 @@ module ActiveMetric
       @start_time = summary.start_time
 
 
-      Rails.logger.info "\n\n\nSERIES DATA:\n#{self.series_data.inspect}\n\n"
-
       summary.stat_data.each do |datum|
         axis = datum[:axis]
         next if axis < 0
