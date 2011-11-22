@@ -73,7 +73,7 @@ module ActiveMetric
     end
 
     def series
-      self.series_data = generate_series_data
+      generate_series_data
       self.save!
       self.series_data.values
     end
@@ -89,19 +89,18 @@ module ActiveMetric
         name = datum[:name]
         axis = datum[:axis]
 
+        Rails.logger.info "\nskipping #{sample_skip}\n"
         interval_samples.skip(sample_skip).each do |sample|
           stat = sample.stats_by_name[datum[:name]]
           data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
         end
 
         if series[name]
-          series[name][:data].concat data
+          self.series_data[name][:data].concat data
         else
-          series[name] ={:name => name, :data => data, :yAxis => axis}
+          self.series_data[name] ={:name => name, :data => data, :yAxis => axis}
         end
-
       end
-      series
     end
 
     def time(sample_time)
