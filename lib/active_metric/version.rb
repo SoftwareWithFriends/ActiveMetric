@@ -1,3 +1,3 @@
 module ActiveMetric
-  VERSION = "0.1.23"
+  VERSION = "1.0.0"
 end
