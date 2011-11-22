@@ -96,7 +96,7 @@ module ActiveMetric
       report = Report.create
       subject = TestSubject.create :report => report
 
-      1090.times do |value|
+      10.times do |value|
         subject.calculate TestMeasurement.new(:subjects => [subject], :value => value % 100, :timestamp => value)
       end
 

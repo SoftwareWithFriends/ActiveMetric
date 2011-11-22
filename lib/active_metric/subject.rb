@@ -6,6 +6,7 @@ module ActiveMetric
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
     field :name, :type => String
+    field :series_data, :type => Hash 
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
@@ -72,18 +73,33 @@ module ActiveMetric
     end
 
     def series
-      series = []
+      self.series_data = generate_series_data
+      self.save!
+      self.series_data.values
+    end
+
+    def generate_series_data
+      self.series_data ||= {}
+      sample_skip = self.series_data.size
       @start_time = summary.start_time
+
       summary.stat_data.each do |datum|
         next if datum[:axis] < 0
         data = []
+        name = datum[:name]
+        axis = datum[:axis]
 
-        interval_samples.each do |sample|
+        interval_samples.skip(sample_skip).each do |sample|
           stat = sample.stats_by_name[datum[:name]]
           data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
         end
 
-        series << {:name => datum[:name], :data => data, :yAxis => datum[:axis]}
+        if series[name]
+          series[name][:data].concat data
+        else
+          series[name] ={:name => name, :data => data, :yAxis => axis}
+        end
+
       end
       series
     end
