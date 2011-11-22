@@ -92,7 +92,7 @@ module ActiveMetric
         data = []
 
         if self.series_data[name]
-          sample_skip = self.series_data[name][:data].size
+          sample_skip = self.series_data[name]["data"].size
         else
           sample_skip = 0
         end
@@ -104,7 +104,7 @@ module ActiveMetric
         end
 
         if self.series_data[name]
-          self.series_data[name][:data].concat data
+          self.series_data[name]["data"].concat data
         else
           self.series_data[name] = {:name => name, :data => data, :yAxis => axis}
         end
