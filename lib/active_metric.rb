@@ -1,5 +1,8 @@
 require 'mongoid'
 
+require 'active_metric/behavior/graph_calculation'
+
+
 require 'active_metric/subject'
 require 'active_metric/measurement'
 require 'active_metric/sample'

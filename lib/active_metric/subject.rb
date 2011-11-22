@@ -2,11 +2,12 @@ module ActiveMetric
   class Subject
     include Mongoid::Document
     include Mongoid::Timestamps
+    include GraphCalculation
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
     field :name, :type => String
-    field :series_data, :type => Hash 
+    field :series_data, :type => Hash
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
@@ -72,46 +73,7 @@ module ActiveMetric
       |
     end
 
-    def series
-      generate_series_data
-      self.save!
-      self.series_data.values
-    end
 
-    def generate_series_data
-      self.series_data ||= {}
-      @start_time = summary.start_time
-
-
-      summary.stat_data.each do |datum|
-        axis = datum[:axis]
-        next if axis < 0
-        name = datum[:name].to_s
-        data = []
-
-        if self.series_data[name]
-          sample_skip = self.series_data[name]["data"].size
-        else
-          sample_skip = 0
-        end
-        Rails.logger.info "\nskipping #{sample_skip} for #{name}\n"
-
-        interval_samples.skip(sample_skip).each do |sample|
-          stat = sample.stats_by_name[name.to_sym]
-          data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
-        end
-
-        if self.series_data[name]
-          self.series_data[name]["data"].concat data
-        else
-          self.series_data[name] = {:name => name, :data => data, :yAxis => axis}
-        end
-      end
-    end
-
-    def time(sample_time)
-      ((sample_time - @start_time)).to_i
-    end
 
   end
 end
