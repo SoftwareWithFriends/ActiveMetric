@@ -99,7 +99,7 @@ module ActiveMetric
         Rails.logger.info "\nskipping #{sample_skip} for #{name}\n"
 
         interval_samples.skip(sample_skip).each do |sample|
-          stat = sample.stats_by_name[name]
+          stat = sample.stats_by_name[name.to_sym]
           data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
         end
 
