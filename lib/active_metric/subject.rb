@@ -82,14 +82,12 @@ module ActiveMetric
       self.series_data ||= {}
       @start_time = summary.start_time
 
-
       summary.stat_data.each do |datum|
         next if datum[:axis] < 0
         data = []
         name = datum[:name]
         axis = datum[:axis]
 
-        
         if self.series_data[name]
           sample_skip = self.series_data[name][:data].size
         else
