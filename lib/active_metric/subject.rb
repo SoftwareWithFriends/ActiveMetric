@@ -86,7 +86,7 @@ module ActiveMetric
       Rails.logger.info "\n\n\nSERIES DATA:\n#{self.series_data.inspect}\n\n"
 
       summary.stat_data.each do |datum|
-        axis = datum[:axis].to_s
+        axis = datum[:axis]
         next if axis < 0
         name = datum[:name].to_s
         data = []
