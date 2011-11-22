@@ -95,10 +95,10 @@ module ActiveMetric
           data << [time(sample.timestamp), stat.value] if sample.timestamp && @start_time
         end
 
-        if series[name]
+        if self.series_data[name]
           self.series_data[name][:data].concat data
         else
-          self.series_data[name] ={:name => name, :data => data, :yAxis => axis}
+          self.series_data[name] = {:name => name, :data => data, :yAxis => axis}
         end
       end
     end
