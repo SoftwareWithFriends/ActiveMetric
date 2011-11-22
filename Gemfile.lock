@@ -10,7 +10,7 @@ GIT
 PATH
   remote: .
   specs:
-    active_metric (0.1.22)
+    active_metric (1.0.0)
       mongoid
       rails (~> 3.1)
 

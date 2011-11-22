@@ -42,21 +42,25 @@ module ActiveMetric
     end
 
     test "can calculate min" do
-      stat = Min.new(:value, :metric => @sample)
+      stat = Min.new(:value, :calculable => @sample)
       test_stat(stat,10.times)
       assert_equal 0, stat.value
     end
 
     test "can calculate max" do
-      stat = Max.new(:value, :metric => @sample)
+      stat = Max.new(:value, :calculable => @sample)
       test_stat(stat, 10.times)
       assert_equal 9, stat.value
     end
 
     test "can calculate mean" do
-      stat = Mean.new(:value, :metric => @sample)
+      stat = Mean.new(:value, :calculable => @sample)
       test_stat(stat, 10.times)
       assert_equal 4.5, stat.value
+    end
+
+    test "can calculate standard deviation" do
+
     end
 
     test "has subject" do
