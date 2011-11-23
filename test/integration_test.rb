@@ -16,7 +16,6 @@ module ActiveMetric
       end
       subject2.complete
       subject.complete
-      p subject.summary.class
       assert_equal 99, subject.summary.eightieth_value.value
       assert_equal 199, subject2.summary.eightieth_value.value
     end

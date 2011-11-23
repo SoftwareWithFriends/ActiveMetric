@@ -22,12 +22,30 @@ module ActiveMetric
 
     def calculate_percentile(percentile, metric)
       return 0 unless size_for_calculation > 0
-      @sorted_measurements[metric.to_sym] ||= measurements.sort_by(&metric.to_sym)
+      measurements_for_metric = sorted_measurements_for(metric)
       index = size_for_calculation * percentile
-      @sorted_measurements[metric.to_sym][index].send(metric.to_sym)
+      measurements_for_metric[index].send(metric.to_sym)
+    end
+    
+    def calculate_standard_deviation(metric)
+      return 0 unless size_for_calculation > 0
+      measurements_for_metric = sorted_measurements_for(metric)
+      standard_deviation_on(measurements_for_metric, metric)  
     end
 
     private
+    
+    def standard_deviation_on(list, metric)
+      sd = StandardDeviator.new(metric)
+      list.each do |measurement|
+        sd.calculate measurement
+      end
+      sd.standard_deviation
+    end
+    
+    def sorted_measurements_for(metric)
+      @sorted_measurements[metric.to_sym] ||= measurements.sort_by(&metric.to_sym)
+    end
 
     def update_reservoir_at_current_index(measurement)
       @measurements[@current_index] = measurement

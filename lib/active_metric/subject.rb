@@ -20,7 +20,7 @@ module ActiveMetric
     end
 
     def standard_deviators
-      @standard_deviators ||={}
+      @standard_deviators ||= {}
     end
 
     def ensure_standard_deviator_for(property)

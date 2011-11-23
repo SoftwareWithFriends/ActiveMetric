@@ -18,9 +18,16 @@ module ActiveMetric
     end
 
     def standard_deviation
-      mean         = sum.to_f / count
-      mean_squares = sum_of_squares.to_f / count
       @standard_deviation   = Math.sqrt(mean_squares - (mean * mean))
     end
+  
+    def mean
+      sum.to_f / count
+    end
+
+    def mean_squares
+      sum_of_squares.to_f / count
+    end
+
   end
 end

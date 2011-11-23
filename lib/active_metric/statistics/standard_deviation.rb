@@ -8,7 +8,9 @@ module ActiveMetric
       set_standard_deviation unless @have_set_standard_deviation
     end
     def complete
+      set_standard_deviation unless @have_set_standard_deviation
       self.value = subject.standard_deviators[self.property].standard_deviation
+      super
     end
 
     def set_standard_deviation
