@@ -7,6 +7,12 @@ module ActiveMetric
       test_stat(sd, 100.times)
       assert_close_to 28.87, sd.standard_deviation
     end
+    
+    test "can calculate standard deviation if difference is less than 0" do
+      sd = StandardDeviator.new(:value)
+      test_stat(sd, 100.times)
+      assert_close_to 28.87, sd.standard_deviation
+    end
 
     private
 

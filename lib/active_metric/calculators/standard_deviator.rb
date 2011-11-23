@@ -1,6 +1,6 @@
 module ActiveMetric
   class StandardDeviator
-    attr_reader :count, :sum, :sum_of_squares, :standard_deviation, :property
+    attr_reader :count, :sum, :sum_of_squares, :property
 
     def initialize(property)
       @count = 0
@@ -18,7 +18,9 @@ module ActiveMetric
     end
 
     def standard_deviation
-      @standard_deviation   = Math.sqrt(mean_squares - (mean * mean))
+      diff = mean_squares - (mean * mean)
+      return -1 if diff < 0
+      @standard_deviation = Math.sqrt(diff)
     end
   
     def mean
