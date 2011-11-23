@@ -75,5 +75,11 @@ module ActiveMetric
       sample.complete
     end
 
+    test "should return raw stat if sample does not have that stat" do
+      sample = TestSample.new
+      stat = sample.this_stat_does_not_exist
+      assert_equal 0, stat.value
+    end
+
   end
 end

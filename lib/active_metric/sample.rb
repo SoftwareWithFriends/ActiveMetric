@@ -47,7 +47,7 @@ module ActiveMetric
     end
 
     def method_missing(method, *args)
-      super(method, *args) unless stats_by_name[method]
+      return raw_stat unless stats_by_name[method]
       self.class.send(:define_method, method.to_sym) {stats_by_name[method]}
       stats_by_name[method]
     end
@@ -119,6 +119,8 @@ module ActiveMetric
                                                                block)}
     end
 
-
+    def raw_stat
+      Stat.new(:value)
+    end
   end
 end
