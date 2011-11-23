@@ -6,14 +6,15 @@ module ActiveMetric
     test "should have the correct stats by name" do
       sample = TestSample.create
       sample = TestSample.find sample.id
-      assert_equal 7, sample.stats.size
+      assert_equal 8, sample.stats.size
       assert_kind_of Min, sample.min_value
       assert_kind_of Mean, sample.mean_value
       assert_kind_of Max, sample.max_value
       assert_kind_of Eightieth, sample.eightieth_value
       assert_kind_of NinetyEighth, sample.ninety_eighth_value
-      assert_kind_of Stat, sample.test_count
-      assert_kind_of Stat, sample.test_response_codes
+      assert_kind_of StandardDeviation, sample.standard_deviation_value
+      assert_kind_of Custom, sample.test_count
+      assert_kind_of Custom, sample.test_response_codes
     end
 
     test "should have sames stats when reloaded" do
