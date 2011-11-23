@@ -19,6 +19,14 @@ module ActiveMetric
       @reservoir ||= Reservoir.new(2000)
     end
 
+    def standard_deviators
+      @standard_deviators ||={}
+    end
+
+    def ensure_standard_deviator_for(property)
+      standard_deviators[property] ||= StandardDeviator.new(property)
+    end
+
     def interval_samples
       samples.where(:interval => self.class.interval_length)
     end
@@ -27,6 +35,7 @@ module ActiveMetric
       summary.calculate(measurement)
       @current_sample = current_sample.calculate(measurement)
       reservoir.fill(measurement)
+      standard_deviators.values.each {|sd| sd.calculate(measurement)}
     end
 
     def complete

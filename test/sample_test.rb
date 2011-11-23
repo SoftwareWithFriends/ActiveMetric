@@ -4,7 +4,9 @@ module ActiveMetric
   class SampleTest < ActiveSupport::TestCase
 
     test "should have the correct stats by name" do
-      sample = TestSample.create
+      subject = TestSubject.new
+
+      sample = TestSample.create(:samplable => subject)
       sample = TestSample.find sample.id
       assert_equal 8, sample.stats.size
       assert_kind_of Min, sample.min_value
@@ -18,14 +20,17 @@ module ActiveMetric
     end
 
     test "should have sames stats when reloaded" do
-      sample = TestSample.create
+      subject = TestSubject.new
+
+      sample = TestSample.create :samplable => subject
       sample.calculate TestMeasurement.create(:value => 10, :timestamp => 1234)
       sample.save!
       assert_equal 10, sample.min_value.value
     end
 
     test "sample without interval should return self always" do
-      sample = TestSample.new
+      subject = TestSubject.new
+      sample = TestSample.new :samplable => subject
       sample.calculate TestMeasurement.create(:value => 10, :timestamp => 1234)
       new_sample = sample.calculate TestMeasurement.create(:value => 10, :timestamp => 91234)
 
@@ -33,7 +38,9 @@ module ActiveMetric
     end
 
     test "calculate calls complete and returns new sample if measurement outside of sample size" do
-      sample = TestSample.new(:interval => 6)
+      subject = TestSubject.new
+
+      sample = TestSample.new(:interval => 6, :samplable => subject)
       5.times do |time|
         sample.calculate TestMeasurement.create :value => 1, :timestamp => time
       end
@@ -60,7 +67,8 @@ module ActiveMetric
     end
 
     test "should call calculate on all stats" do
-      sample = TestSample.new
+      subject = TestSubject.create
+      sample = TestSample.create(:samplable => subject)
       5.times do |value|
         measurement = TestMeasurement.create :value => value, :timestamp => 1
         sample.stats.each do |stat|

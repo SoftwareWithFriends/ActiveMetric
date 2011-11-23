@@ -63,6 +63,16 @@ module ActiveMetric
       assert_equal 155, subject2.summary.ninety_eighth_value.value
     end
 
+    test "can calculate standard deviations" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      10.times do |value|
+        subject.calculate TestMeasurement.new(:value => 100 - value, :timestamp => value)
+      end
+
+      subject.complete
+      assert_close_to 2.87, subject.summary.standard_deviation_value.value
+    end
 
     private
 
@@ -71,6 +81,5 @@ module ActiveMetric
       range = ((actual - range_val)..(actual + range_val))
       assert_within_range range, estimated
     end
-
   end
 end

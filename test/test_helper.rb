@@ -39,8 +39,13 @@ end
 
 class ActiveSupport::TestCase
 
-    def assert_within_range(range, value)
-      assert range === value, "Expected #{value} to be within #{range}"
-    end
+  def assert_within_range(range, value)
+    assert range === value, "Expected #{value} to be within #{range}"
+  end
+
+  def assert_close_to expected, actual
+    rounded = ((actual * 100).round) / 100.0
+    assert_equal expected, rounded
+  end
 
 end

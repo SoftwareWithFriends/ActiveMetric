@@ -59,12 +59,6 @@ module ActiveMetric
       assert_equal 4.5, stat.value
     end
 
-    test "can calculate standard deviation" do
-      stat = StandardDeviation.new(:value, :calculable => @sample)
-      test_stat(stat, 100.times)
-      assert_close_to 28.87, stat.value
-    end
-
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
     #  stat = StandardDeviation.new(:value, :calculable => @sample)
@@ -85,15 +79,12 @@ module ActiveMetric
 
     def test_stat(stat, values)
       values.each  do |value|
-        stat.calculate TestMeasurement.create(:value => value)
+        stat.calculate TestMeasurement.new(:value => value)
       end
       stat.complete
     end
 
-    def assert_close_to expected, actual
-      rounded = ((actual * 100).round) / 100.0
-      assert_equal expected, rounded
-    end
+
 
 
   end
