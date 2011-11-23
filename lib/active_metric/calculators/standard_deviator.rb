@@ -19,7 +19,7 @@ module ActiveMetric
 
     def standard_deviation
       diff = mean_squares - (mean * mean)
-      return -1 if diff < 0
+      return 0 if diff.nan?
       @standard_deviation = Math.sqrt(diff)
     end
   
