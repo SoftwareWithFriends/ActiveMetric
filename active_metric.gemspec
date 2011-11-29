@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 3.1"
   s.add_dependency 'bson_ext', "= 1.4.0"
-  s.add_dependency 'bson', "= 1.4.0"
   s.add_dependency "mongo",    "= 1.4.0"
 
   s.add_development_dependency "sqlite3"
