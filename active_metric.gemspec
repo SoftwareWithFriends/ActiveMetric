@@ -18,8 +18,9 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 3.1"
-  s.add_dependency "mongoid"
-  s.add_dependency 'bson_ext'
+  s.add_dependency 'bson_ext', "= 1.4.0"
+  s.add_dependency 'bson', "= 1.4.0"
+  s.add_dependency "mongo",    "= 1.4.0"
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "mocha"
