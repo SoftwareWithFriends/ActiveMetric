@@ -89,5 +89,11 @@ module ActiveMetric
       assert_equal 0, stat.value
     end
 
+    test "should return stat if sample has it" do
+      sample = TestSample.new
+      stat = sample.min_value
+      assert stat.kind_of? Min
+    end
+
   end
 end
