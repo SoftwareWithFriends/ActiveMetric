@@ -123,9 +123,7 @@ module ActiveMetric
     end
 
     def raw_stat
-      r_stat = Stat.new(:value)
-      Rails.logger.error "\n\nGenerating new raw stat #{r_stat.inspect}"
-      r_stat
+      Stat.new(:value)
     end
   end
 end
