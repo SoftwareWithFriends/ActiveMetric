@@ -8,8 +8,6 @@ gemspec
 # jquery-rails is used by the dummy application
 gem "jquery-rails"
 
-gem 'mongoid', :git => 'https://github.com/mongoid/mongoid.git'
-gem 'bson_ext'
 
 
 # Declare any dependencies that are still in development here instead of in
