@@ -49,6 +49,7 @@ module ActiveMetric
     def method_missing(method, *args)
       return raw_stat unless stats_by_name[method]
       self.class.send(:define_method, method.to_sym) {stats_by_name[method]}
+      Rails.logger.error "\n\nHas stat #{method} with value #{stats_by_name[method].inspect}"
       stats_by_name[method]
     end
 
@@ -120,7 +121,9 @@ module ActiveMetric
     end
 
     def raw_stat
-      Stat.new(:value)
+      r_stat = Stat.new(:value)
+      Rails.logger.error "\n\nGenerating new raw stat #{r_stat.inspect}"
+      r_stat
     end
   end
 end

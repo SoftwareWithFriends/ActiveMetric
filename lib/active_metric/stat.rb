@@ -9,8 +9,8 @@ module ActiveMetric
     field :property, :type => String
 
     def initialize(property,*args)
-      super(*args)
       self.property = property
+      super(*args)
     end
 
     def access_name
