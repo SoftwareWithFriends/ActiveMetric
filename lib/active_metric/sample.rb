@@ -59,12 +59,12 @@ module ActiveMetric
       @stats_by_name ||= generate_stats_by_name
     end
 
-    def stat_data
-      data = []
+    def stat_meta_data
+      meta_data = {}
       stats.each do |stat|
-        data << {:name => stat.access_name, :axis => stat.axis}
+        meta_data[stat.access_name] = {:name => stat.access_name, :axis => stat.axis} if stat.axis >= 0
       end
-      data
+      meta_data
     end
 
     private

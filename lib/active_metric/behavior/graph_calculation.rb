@@ -4,55 +4,43 @@ module ActiveMetric
     def series
       update_all_series
       self.save!
-      self.series_data.values
+      series_data.values
     end
 
     def update_all_series
-      self.series_data ||= {}
+      self.series_data ||= initialize_cache
 
-      remaining_interval_samples = get_remaining_interval_samples
+      remaining_interval_samples.each do |sample|
+        sample.stats.each do|stat|
+          if stat_meta_data[stat.access_name]
+            series_data[stat.access_name.to_s]["data"] << [time(sample.timestamp), stat.value] if sample.timestamp && start_time
+          end
+        end
+      end
+    end
 
-      stat_data_for_series.each do |meta_data|
+    def initialize_cache
+      empty_cache = {}
+      stat_meta_data.values.each do |meta_data|
         axis = meta_data[:axis]
         next if axis < 0
         name = meta_data[:name].to_s
-        update_series_for_stat(axis, name, remaining_interval_samples)
+        empty_cache[name] = {"name" => name, "data" => [], "yAxis" => axis}
       end
+      empty_cache
     end
 
-    def update_series_for_stat(axis, name, remaining_interval_samples)
-      data = calculate_series_data(name, remaining_interval_samples)
-      update_series_data(axis, data, name)
-    end
-
-    def get_remaining_interval_samples
+    def remaining_interval_samples
       sample_skip = size_of_cache_data
       interval_samples.skip(sample_skip)
-    end
-
-    def calculate_series_data(name, remaining_interval_samples)
-      data = []
-      remaining_interval_samples.each do |sample|
-        stat = sample.stats_by_name[name.to_sym]
-        data << [time(sample.timestamp), stat.value] if sample.timestamp && start_time
-      end
-      data
-    end
-
-    def update_series_data(axis, data, name)
-      if series_data[name]
-        series_data[name]["data"].concat data
-      else
-        series_data[name] = {"name" => name, "data" => data, "yAxis" => axis}
-      end
     end
 
     def time(sample_time)
       ((sample_time - start_time)).to_i
     end
 
-    def stat_data_for_series
-      summary.stat_data
+    def stat_meta_data
+      summary.stat_meta_data
     end
 
     def start_time
