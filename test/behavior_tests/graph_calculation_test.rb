@@ -1,4 +1,4 @@
-require "test_helper"
+require File.join(File.dirname(__FILE__),"../test_helper")
 
 module ActiveMetric
   class GraphCalculationTest < ActiveSupport::TestCase
@@ -21,6 +21,28 @@ module ActiveMetric
         assert_equal [[2,4],[7,8]],  subject.series_data["eightieth_value"][:data]
         assert_equal [[2,4],[7,9]], subject.series_data["ninety_eighth_value"][:data]
       end
+    end
+
+    test "appropriately calculates current cache size" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      10.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+
+      subject.complete
+      subject.series
+      assert_equal 2, subject.size_of_cache_data
+
+      15.times do |value|
+        subject.calculate TestMeasurement.new(:value => 10 + value, :timestamp => 10 + value)
+      end
+
+      subject.complete
+      assert_equal 2, subject.size_of_cache_data
+      subject.series
+      assert_equal 5, subject.size_of_cache_data
     end
 
   end

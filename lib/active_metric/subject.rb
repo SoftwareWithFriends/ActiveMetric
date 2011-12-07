@@ -55,7 +55,6 @@ module ActiveMetric
       summary.stats.each do |stat|
         headers << stat.name
       end
-
     end
 
     def interval_samples_query
