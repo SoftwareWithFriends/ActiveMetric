@@ -13,6 +13,8 @@ module ActiveMetric
     field :measurement_count, :type => Float,   :default => 0.0
     field :sum,               :type => Integer, :default => 0
 
+    index :timestamp
+
     def initialize(*args)
       super(*args)
       if stats.empty?

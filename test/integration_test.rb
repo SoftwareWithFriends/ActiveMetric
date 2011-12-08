@@ -73,6 +73,16 @@ module ActiveMetric
       assert_close_to 2.87, subject.summary.standard_deviation_value.value
     end
 
+    test "interval samples should order before skip" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      50.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+      subject.complete
+      assert_equal 47, subject.interval_samples.skip(9).first.timestamp
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)

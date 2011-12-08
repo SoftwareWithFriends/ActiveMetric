@@ -28,7 +28,7 @@ module ActiveMetric
     end
 
     def interval_samples
-      samples.where(:interval => self.class.interval_length)
+      samples.where(:interval => self.class.interval_length).order_by([:timestamp, :asc])
     end
 
     def calculate(measurement)
@@ -55,10 +55,6 @@ module ActiveMetric
       summary.stats.each do |stat|
         headers << stat.name
       end
-    end
-
-    def interval_samples_query
-      samples.where(:interval => self.class.interval_length)
     end
 
     def self.sample_type
