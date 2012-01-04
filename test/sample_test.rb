@@ -51,6 +51,14 @@ module ActiveMetric
       assert_not_equal sample, new_sample
     end
 
+    test "should not save if sample has no measurements" do
+      subject = TestSubject.new
+      sample = TestSample.new(:interval => 6, :samplable => subject)
+
+      assert_equal false, sample.complete
+      assert_equal 0, TestSample.count
+    end
+
     test "should have correct timestamp" do
       measurements = [TestMeasurement.create(:value => 10, :timestamp => 1),
                       TestMeasurement.create(:value => 12, :timestamp => 2),

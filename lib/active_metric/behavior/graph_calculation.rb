@@ -1,6 +1,7 @@
 module ActiveMetric
   module GraphCalculation
     #REQUIRES SUMMARY AND INTERVAL SAMPLES AND SERIES DATA
+
     def series
       update_all_series
       self.save!

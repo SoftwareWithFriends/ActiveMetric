@@ -38,6 +38,7 @@ module ActiveMetric
     end
 
     def complete
+      return false if measurement_count < 1
       self.stats.each do |statistic|
         statistic.complete
       end
@@ -45,7 +46,8 @@ module ActiveMetric
     end
 
     def time_range
-      end_time - start_time
+      return end_time - start_time if end_time && start_time
+      return 0
     end
 
     def method_missing(method, *args)
