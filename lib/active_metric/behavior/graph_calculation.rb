@@ -23,9 +23,9 @@ module ActiveMetric
     def initialize_cache
       empty_cache = {}
       stat_meta_data.values.each do |meta_data|
-        axis = meta_data[:axis]
+        axis = meta_data["axis"]
         next if axis < 0
-        name = meta_data[:name].to_s
+        name = meta_data["name"].to_s
         empty_cache[name] = {"name" => name, "data" => [], "yAxis" => axis}
       end
       empty_cache
