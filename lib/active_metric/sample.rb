@@ -25,7 +25,8 @@ module ActiveMetric
     end
 
     def calculate(measurement)
-      self.start_time ||= measurement.timestamp
+      set_start_time(measurement) unless start_time
+
       if within_interval?(measurement)
 
         update_time(measurement)
@@ -66,12 +67,21 @@ module ActiveMetric
     def stat_meta_data
       meta_data = {}
       stats.each do |stat|
-        meta_data[stat.access_name] = {"name" => stat.access_name, "axis" => stat.axis} if stat.axis >= 0
+        meta_data[stat.access_name] = {:name => stat.access_name, :axis => stat.axis} if stat.axis >= 0
       end
       meta_data
     end
 
+    def is_summary?
+      ! interval
+    end
+
     private
+
+    def set_start_time(measurement)
+      self.start_time = measurement.timestamp
+      self.save! if is_summary?
+    end
 
     def generate_stats_by_name
       stat_name_hash = {}

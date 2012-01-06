@@ -103,5 +103,24 @@ module ActiveMetric
       assert stat.kind_of? Min
     end
 
+    test "is summary" do
+      subject = TestSubject.create
+      summary = subject.summary
+      assert summary.is_summary?
+    end
+
+    test "summary only should save itself with start time after first measurement" do
+      subject = TestSubject.create
+      summary = subject.summary
+      assert_nil summary.start_time
+
+
+      summary.calculate(TestMeasurement.create :value => 1, :timestamp => 1)
+      assert_equal 1, summary.start_time
+
+      summary.reload
+      assert_equal 1, summary.start_time
+    end
+
   end
 end
