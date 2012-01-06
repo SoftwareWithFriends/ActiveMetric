@@ -46,7 +46,7 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= interval_samples.last ||
-          self.class.sample_type.create(:samplable => self,
+          self.class.sample_type.new(:samplable => self,
                                         :interval   => self.class.interval_length)
     end
 

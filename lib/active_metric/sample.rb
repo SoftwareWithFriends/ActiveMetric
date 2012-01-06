@@ -110,7 +110,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.create(:samplable => self.samplable, :interval => interval)
+      self.class.new(:samplable => self.samplable, :interval => interval)
     end
 
     def self.stats_defined
