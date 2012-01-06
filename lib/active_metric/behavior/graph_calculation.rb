@@ -14,6 +14,7 @@ module ActiveMetric
       remaining_interval_samples.each do |sample|
         sample.stats.each do|stat|
           if stat_meta_data[stat.access_name]
+            debug "adding stat data #{time(sample.timestamp)}, #{stat.value}"
             series_data[stat.access_name.to_s]["data"] << [time(sample.timestamp), stat.value] if sample.timestamp && start_time
           end
         end
@@ -33,6 +34,8 @@ module ActiveMetric
 
     def remaining_interval_samples
       sample_skip = size_of_cache_data
+      debug "sample skip: #{sample_skip}"
+      debug "interval samples: #{interval_samples.count}"
       interval_samples.skip(sample_skip)
     end
 
@@ -50,11 +53,16 @@ module ActiveMetric
 
     def size_of_cache_data
       if series_data.first
-        sample_skip = series_data.first[1]["data"].size
+        sample_skip = series_data.values.first["data"].size
+        debug "has data cache"
       else
         sample_skip = 0
       end
       sample_skip
+    end
+
+    def debug(message)
+      Rails.logger.info "DEBUG #{self.name} #{message}"
     end
 
   end
