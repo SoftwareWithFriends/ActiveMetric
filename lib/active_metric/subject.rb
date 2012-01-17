@@ -12,7 +12,7 @@ module ActiveMetric
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
-          self.class.sample_type.create(:samplable => self,
+          self.class.summary_type.create(:samplable => self,
                                         :interval   => nil)
     end
 
