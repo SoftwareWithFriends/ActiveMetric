@@ -41,7 +41,7 @@ module ActiveMetric
     end
 
     def stat_meta_data
-      summary.stat_meta_data
+      self.class.sample_type.new.stat_meta_data
     end
 
     def start_time
