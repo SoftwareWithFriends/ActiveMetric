@@ -66,7 +66,7 @@ module ActiveMetric
       raise
     end
 
-    def self.calculated_with(sample_type, interval_length)
+    def self.calculated_with(sample_type, interval_length, summary_type = sample_type)
       instance_eval %Q|
         def self.sample_type
           #{sample_type}
@@ -74,6 +74,10 @@ module ActiveMetric
 
         def self.interval_length
           #{interval_length}
+        end
+
+        def self.summary_type
+          #{summary_type}
         end
       |
     end
