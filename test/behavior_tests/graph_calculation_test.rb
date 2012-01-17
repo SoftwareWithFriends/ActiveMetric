@@ -3,7 +3,7 @@ require "test_helper"
 module ActiveMetric
   class GraphCalculationTest < ActiveSupport::TestCase
 
-    test "can calculate series" do
+    test "can update series data" do
       report = Report.create
       subject = TestSubject.create :report => report
 
@@ -14,7 +14,7 @@ module ActiveMetric
       subject.complete
 
       report.subjects.each do |subject|
-        subject.series
+        subject.update_series_data
         assert_equal [[2,4],[7,9]], subject.series_data["max_value"]["data"]
         assert_equal [[2,0],[7,5]],  subject.series_data["min_value"]["data"]
         assert_equal [[2,2],[7,7]], subject.series_data["mean_value"]["data"]
@@ -32,7 +32,7 @@ module ActiveMetric
       end
 
       subject.complete
-      subject.series
+      subject.update_series_data
       assert_equal 2, subject.size_of_cache_data
 
       15.times do |value|
@@ -41,8 +41,33 @@ module ActiveMetric
 
       subject.complete
       assert_equal 2, subject.size_of_cache_data
-      subject.series
+      subject.update_series_data
       assert_equal 5, subject.size_of_cache_data
+    end
+
+    test "series return empty cache if no series data" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      assert_nil subject.series_data
+
+      assert_equal [
+                       {"name"=>"max_value", "data"=>[], "yAxis"=>0},
+                       {"name"=>"min_value", "data"=>[], "yAxis"=>0},
+                       {"name"=>"mean_value", "data"=>[], "yAxis"=>0},
+                       {"name"=>"test_count", "data"=>[], "yAxis"=>1},
+                       {"name"=>"eightieth_value", "data"=>[], "yAxis"=>0},
+                       {"name"=>"standard_deviation_value", "data"=>[], "yAxis"=>0},
+                       {"name"=>"ninety_eighth_value", "data"=>[], "yAxis"=>0}], subject.series
+    end
+
+    test "calling series does not update subject" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      subject.series
+
+      assert_nil subject.series_data
     end
 
   end

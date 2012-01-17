@@ -10,7 +10,7 @@ module ActiveMetric
     field :start_time,        :type => Integer
     field :end_time,          :type => Integer
     field :timestamp,         :type => Integer
-    field :measurement_count, :type => Float,   :default => 0.0
+    field :measurement_count, :type => Integer, :default => 0
     field :sum,               :type => Integer, :default => 0
 
     index :timestamp
@@ -100,7 +100,7 @@ module ActiveMetric
       self.sum += measurement.timestamp
       self.measurement_count += 1
       self.end_time           = measurement.timestamp
-      self.timestamp          = self.sum / self.measurement_count
+      self.timestamp          = (self.sum / self.measurement_count).to_i
     end
 
     def update_stats(measurement)

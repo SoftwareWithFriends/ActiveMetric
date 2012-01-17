@@ -13,7 +13,7 @@ module ActiveMetric
       subject.complete
       assert_nil subject.series_data
 
-      subject.series
+      subject.update_series_data
 
       assert_equal 2, subject.series_data.values.first["data"].count
 
@@ -22,7 +22,7 @@ module ActiveMetric
 
       assert_nil subject.series_data
 
-      subject.series
+      subject.update_series_data
       assert_equal 2, subject.series_data.values.first["data"].count
     end
 

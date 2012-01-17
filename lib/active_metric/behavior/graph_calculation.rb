@@ -3,12 +3,11 @@ module ActiveMetric
     #REQUIRES SUMMARY AND INTERVAL SAMPLES AND SERIES DATA
 
     def series
-      update_all_series
-      self.save!
-      series_data.values
+      data = series_data || initialize_cache
+      data.values
     end
 
-    def update_all_series
+    def update_series_data
       self.series_data ||= initialize_cache
 
       remaining_interval_samples.each do |sample|
@@ -18,6 +17,7 @@ module ActiveMetric
           end
         end
       end
+      self.save!
     end
 
     def initialize_cache

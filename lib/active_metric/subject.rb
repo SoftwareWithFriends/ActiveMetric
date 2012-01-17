@@ -6,6 +6,7 @@ module ActiveMetric
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
+
     field :name, :type => String
     field :series_data, :type => Hash
 
