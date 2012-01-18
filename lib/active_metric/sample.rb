@@ -28,7 +28,6 @@ module ActiveMetric
       set_start_time(measurement) unless start_time
 
       if within_interval?(measurement)
-
         update_time(measurement)
         update_stats(measurement)
         return self

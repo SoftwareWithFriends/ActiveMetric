@@ -9,6 +9,7 @@ module ActiveMetric
 
     def update_series_data
       self.series_data ||= initialize_cache
+      remove_last_sample_from_cache
 
       remaining_interval_samples.each do |sample|
         sample.stats.each do|stat|
@@ -29,6 +30,12 @@ module ActiveMetric
         empty_cache[name] = {"name" => name, "data" => [], "yAxis" => axis}
       end
       empty_cache
+    end
+
+    def remove_last_sample_from_cache
+      series_data.values.each do |cache|
+        cache["data"].pop
+      end
     end
 
     def remaining_interval_samples

@@ -58,7 +58,7 @@ module ActiveMetric
                        {"name"=>"test_count", "data"=>[], "yAxis"=>1},
                        {"name"=>"eightieth_value", "data"=>[], "yAxis"=>0},
                        {"name"=>"standard_deviation_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"ninety_eighth_value", "data"=>[], "yAxis"=>0}], subject.series
+                       {"name"=>"ninety_eighth_value", "data"=>[], "yAxis"=>0}].sort{|a,b| a["name"] <=> b["name"]}, subject.series.sort{|a,b| a["name"] <=> b["name"]}
     end
 
     test "calling series does not update subject" do
@@ -68,6 +68,28 @@ module ActiveMetric
       subject.series
 
       assert_nil subject.series_data
+    end
+
+    test "update series data recalculates last sample" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      9.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+
+      subject.complete
+
+      subject.update_series_data
+
+      assert_equal [[2,4],[6,8]], subject.series_data["max_value"]["data"]
+
+
+      subject.calculate TestMeasurement.new(:value => 9, :timestamp => 9)
+      subject.complete
+
+      subject.update_series_data
+      assert_equal [[2,4],[7,9]], subject.series_data["max_value"]["data"]
     end
 
   end
