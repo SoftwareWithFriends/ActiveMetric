@@ -45,7 +45,7 @@ module ActiveMetric
       self.safely.save!
     end
 
-    def time_range
+    def duration_in_seconds
       return end_time - start_time if end_time && start_time
       return 0
     end
