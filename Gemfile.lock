@@ -10,7 +10,7 @@ GIT
 PATH
   remote: .
   specs:
-    active_metric (1.5.1)
+    active_metric (1.5.2)
       bson_ext (= 1.4.0)
       mongo (= 1.4.0)
       rails (~> 3.1)

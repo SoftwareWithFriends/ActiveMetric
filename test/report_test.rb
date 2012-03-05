@@ -11,9 +11,6 @@ module ActiveMetric
         subject.calculate TestMeasurement.new(:value => 100 - value, :timestamp => value)
       end
       subject.complete
-      assert_nil subject.series_data
-
-      subject.update_series_data
 
       assert_equal 2, subject.series_data.values.first["data"].count
 

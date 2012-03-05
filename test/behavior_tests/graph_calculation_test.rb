@@ -40,8 +40,6 @@ module ActiveMetric
       end
 
       subject.complete
-      assert_equal 2, subject.size_of_cache_data
-      subject.update_series_data
       assert_equal 5, subject.size_of_cache_data
     end
 

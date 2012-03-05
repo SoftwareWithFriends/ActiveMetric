@@ -34,14 +34,30 @@ module ActiveMetric
 
     def calculate(measurement)
       summary.calculate(measurement)
-      @current_sample = current_sample.calculate(measurement)
+      returned_sample = current_sample.calculate(measurement)
+      update_subject_calculators(measurement)
+      update_current_sample(returned_sample) if is_new_sample?(returned_sample)
+    end
+
+    def update_current_sample(returned_sample)
+      @current_sample = returned_sample
+      self.complete
+    end
+
+    def is_new_sample?(returned_sample)
+      returned_sample != @current_sample
+    end
+
+    def update_subject_calculators(measurement)
       reservoir.fill(measurement)
-      standard_deviators.values.each {|sd| sd.calculate(measurement)}
+      standard_deviators.values.each { |sd| sd.calculate(measurement) }
     end
 
     def complete
       self.summary.complete
       self.current_sample.complete
+      self.update_series_data
+
       self.safely.save
     end
 

@@ -83,6 +83,21 @@ module ActiveMetric
       assert_equal 47, subject.interval_samples.skip(9).first.timestamp
     end
 
+    test "summary should update when samples changes" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      6.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+
+      assert_equal 4.0, subject.summary.eightieth_value.value
+
+      subject.calculate TestMeasurement.new(:value => 6, :timestamp => 6)
+
+      assert_equal 4.0, subject.summary.eightieth_value.value
+
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)
