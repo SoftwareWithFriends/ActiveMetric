@@ -19,5 +19,9 @@ module ActiveMetric
       end
     end
 
+    def min
+      0
+    end
+
   end
 end
