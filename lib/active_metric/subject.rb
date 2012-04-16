@@ -74,6 +74,11 @@ module ActiveMetric
       end
     end
 
+    def graphable_stats
+      return {} unless samples.any?
+      samples.first.stat_meta_data
+    end
+
     def self.sample_type
       raise
     end
