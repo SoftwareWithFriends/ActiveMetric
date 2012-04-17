@@ -23,5 +23,15 @@ module ActiveMetric
       0
     end
 
+    def subjects_by_type
+      subjects_type = {}
+      subjects.each do |subject|
+        type = subject.class.name.split("::").last.underscore
+        subjects_type[type] ||= []
+        subjects_type[type] << subject
+      end
+      subjects_type
+    end
+
   end
 end
