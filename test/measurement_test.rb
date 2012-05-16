@@ -25,6 +25,14 @@ module ActiveMetric
       assert_saves_as_integer @measurement, :timestamp
     end
 
+    test "measurements default timestamp to now" do
+      assert @measurement.timestamp
+      measurement2 = TestMeasurement.new
+      assert measurement2.timestamp
+
+      assert_not_equal @measurement.timestamp, measurement2.timestamp
+    end
+
     private
 
     def assert_saves_as_integer(measurement, field)
