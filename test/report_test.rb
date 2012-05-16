@@ -31,5 +31,22 @@ module ActiveMetric
       assert_equal subjects, report.test_subjects
     end
 
+    test "responds properly to method missing if not a subject name" do
+      report = Report.create
+      assert_raises NoMethodError do
+        report.bad_method
+      end
+    end
+
+    test "can still use dynamic fields with overwritten method missing" do
+      report = Report.create :some_random_field => "value"
+      assert_equal "value", report.some_random_field
+    end
+
+    test "can still access dynamic fields with subjects in name" do
+      report = Report.create :some_subjects => "value"
+      assert_equal "value", report.some_subjects
+    end
+
   end
 end
