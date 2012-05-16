@@ -25,5 +25,11 @@ module ActiveMetric
       assert_equal 4, subject.series_data.values.first["data"].count
     end
 
+    test "method missing for subjects" do
+      report = Report.create
+      subjects = 2.times.map  {TestSubject.create :report => report}
+      assert_equal subjects, report.test_subjects
+    end
+
   end
 end
