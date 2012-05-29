@@ -43,6 +43,12 @@ module ActiveMetric
     end
   end
 
+  class Sum < Stat
+    def calculate(measurement)
+      self.value +=  measurement.send(self.property)
+    end
+  end
+
   class Eightieth < Stat
     def calculate(measurement)
     end

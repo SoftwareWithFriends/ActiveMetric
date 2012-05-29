@@ -66,6 +66,13 @@ module ActiveMetric
       assert_equal 0.9, stat.value
     end
 
+    test "can calculate sum" do
+      stat = Sum.new(:value, :calculable => @sample)
+      test_stat(stat, 10.times)
+      assert_equal 45, stat.value
+    end
+
+
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
     #  stat = StandardDeviation.new(:value, :calculable => @sample)
