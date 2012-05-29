@@ -33,5 +33,17 @@ module ActiveMetric
       subjects_type
     end
 
+    def method_missing(method, *args)
+      subject_class = subject_class_for_report(method)
+      subject_class ? subject_class.where(report_id: id).all :
+          super(method, *args)
+    end
+
+    def subject_class_for_report(method)
+      return "#{self.class.parent}::#{method.to_s.classify}".constantize if method.to_s.match /subjects$/
+    rescue NameError
+    end
+
+
   end
 end

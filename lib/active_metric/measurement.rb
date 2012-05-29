@@ -4,7 +4,7 @@ module ActiveMetric
     include Mongoid::Document
 
     #belongs_to :report, :class => "ActiveMetric::Report"
-    field :timestamp, :type => Integer
+    field :timestamp, :type => Integer, :default => -> {Time.now}
 
     def time
       Time.at((timestamp.to_i / 1000).to_i).to_datetime
