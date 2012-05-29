@@ -61,7 +61,7 @@ module ActiveMetric
 
     test "can calculate derivative" do
       stat = Derivative.new(:value, :calculable => @sample)
-      stat.expects(:sample_duration_in_seconds).returns(10)
+      stat.expects(:sample_duration_in_seconds).times(10).returns(0,1,2,3,4,5,6,7,8,10)
       test_stat(stat, 10.times)
       assert_equal 0.9, stat.value
     end

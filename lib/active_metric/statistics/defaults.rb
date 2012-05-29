@@ -34,13 +34,13 @@ module ActiveMetric
     def calculate(measurement)
       self.last  = (measurement.send(self.property))
       self.first ||= self.last
+      duration = sample_duration_in_seconds
+      if duration > 0
+        self.value = (self.last - self.first).to_f / duration
+      else
+        self.value = 0
+      end
     end
-
-    def complete
-      self.value = (self.last - self.first).to_f / sample_duration_in_seconds
-      super
-    end
-
   end
 
   class Eightieth < Stat
