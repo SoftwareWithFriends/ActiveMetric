@@ -59,6 +59,13 @@ module ActiveMetric
       assert_equal 4.5, stat.value
     end
 
+    test "can calculate derivative" do
+      stat = Derivative.new(:value, :calculable => @sample)
+      stat.expects(:sample_duration_in_seconds).returns(10)
+      test_stat(stat, 10.times)
+      assert_equal 0.9, stat.value
+    end
+
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
     #  stat = StandardDeviation.new(:value, :calculable => @sample)
@@ -79,7 +86,7 @@ module ActiveMetric
 
     def test_stat(stat, values)
       values.each  do |value|
-        stat.calculate TestMeasurement.new(:value => value)
+        stat.calculate TestMeasurement.new(:value => value, :timestamp => value)
       end
       stat.complete
     end

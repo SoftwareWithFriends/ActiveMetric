@@ -30,6 +30,14 @@ module ActiveMetric
     def complete
     end
 
+    def sample_duration_in_seconds
+      calculable.duration_in_seconds
+    end
+
+    def summary_duration_in_seconds
+      subject.summary.duration_in_seconds
+    end
+
     def self.class_for(stat)
       eval(stat.to_s.classify)
     end
@@ -50,7 +58,6 @@ module ActiveMetric
       klass.send(:field, :value, :type => value_type, :default => default)
       ActiveMetric.const_set(class_name,klass)
       return klass
-
     end
 
     def subject

@@ -27,6 +27,22 @@ module ActiveMetric
     end
   end
 
+  class Derivative < Stat
+    field :first
+    field :last
+
+    def calculate(measurement)
+      self.last  = (measurement.send(self.property))
+      self.first ||= self.last
+    end
+
+    def complete
+      self.value = (self.last - self.first).to_f / sample_duration_in_seconds
+      super
+    end
+
+  end
+
   class Eightieth < Stat
     def calculate(measurement)
     end
@@ -44,4 +60,5 @@ module ActiveMetric
       super
     end
   end
+
 end
