@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "test_helper"
 
 module ActiveMetric
   class SampleTest < ActiveSupport::TestCase
@@ -49,6 +49,25 @@ module ActiveMetric
       new_sample = sample.calculate TestMeasurement.create :value => 1, :timestamp => 10
 
       assert_not_equal sample, new_sample
+    end
+
+    test "samples spawned from samples contain seed measurement" do
+      subject = TestSubject.new
+
+      num_measurements = 5
+
+      sample = TestSample.new(:interval => 6, :samplable => subject)
+
+      num_measurements.times do |time|
+        sample.calculate TestMeasurement.create :value => 1, :timestamp => time
+      end
+
+      sample.expects(:complete)
+      new_sample = sample.calculate TestMeasurement.create :value => 1, :timestamp => 10
+
+      assert_not_equal sample, new_sample
+      assert_equal 4, new_sample.seed_measurement.timestamp
+      assert_equal sample.latest_measurement, new_sample.seed_measurement
     end
 
     test "should not save if sample has no measurements" do

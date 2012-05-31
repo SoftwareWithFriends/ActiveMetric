@@ -6,6 +6,8 @@ module ActiveMetric
 
     embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true
 
+    attr_accessor :seed_measurement, :latest_measurement
+
     field :interval,          :type => Integer, :default => nil
     field :start_time,        :type => Integer
     field :end_time,          :type => Integer
@@ -15,8 +17,10 @@ module ActiveMetric
 
     index :timestamp
 
-    def initialize(*args)
-      super(*args)
+    def initialize(options = {}, measurement = nil)
+      @seed_measurement = measurement
+      @latest_measurement = nil
+      super(options)
       if stats.empty?
         self.class.stats_defined.each do |prototype|
           self.stats << prototype[:klass].new(prototype[:name_of_stat])
@@ -28,6 +32,7 @@ module ActiveMetric
       set_start_time(measurement) unless start_time
 
       if within_interval?(measurement)
+        @latest_measurement = measurement
         update_time(measurement)
         update_stats(measurement)
         return self
@@ -109,7 +114,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.new(:samplable => self.samplable, :interval => interval)
+      self.class.new({:samplable => self.samplable, :interval => interval}, @latest_measurement)
     end
 
     def self.stats_defined
