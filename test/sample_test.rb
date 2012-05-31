@@ -141,5 +141,23 @@ module ActiveMetric
       assert_equal 1, summary.start_time
     end
 
+    test "duration from previous sample defaults to current sample duration if no previous sample" do
+      nil_seed_measurement = nil
+      sample = TestSample.new({},nil_seed_measurement)
+      sample.expects(:duration_in_seconds)
+      sample.duration_from_previous_sample_in_seconds
+    end
+
+    test "duration from previous sample returns correct duration" do
+      seed_measurement = mock
+
+      seed_measurement.expects(:timestamp).returns(100)
+
+      sample = TestSample.new({}, seed_measurement)
+      sample.expects(:end_time).returns(200)
+
+      assert_equal 100, sample.duration_from_previous_sample_in_seconds
+    end
+
   end
 end

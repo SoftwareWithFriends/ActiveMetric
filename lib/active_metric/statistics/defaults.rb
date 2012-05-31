@@ -32,15 +32,22 @@ module ActiveMetric
     field :last
 
     def calculate(measurement)
-      self.last  = (measurement.send(self.property))
-      self.first ||= self.last
-      duration = sample_duration_in_seconds
-      if duration > 0
-        self.value = (self.last - self.first).to_f / duration
+      self.last  = property_from_measurement(measurement)
+      self.first ||= (property_from_measurement(calculable.seed_measurement) || self.last)
+      duration_from_seed_measurement = calculable.duration_from_previous_sample_in_seconds
+
+      if duration_from_seed_measurement > 0
+        self.value = (self.last - self.first).to_f / duration_from_seed_measurement
       else
         self.value = 0
       end
     end
+
+    def property_from_measurement(measurement)
+      return nil unless measurement
+      measurement.send(self.property)
+    end
+
   end
 
   class Sum < Stat

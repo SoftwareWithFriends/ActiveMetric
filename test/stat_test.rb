@@ -1,11 +1,11 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 module ActiveMetric
   class StatTest < ActiveSupport::TestCase
 
     setup do
       @subject = TestSubject.create
-      @sample = TestSample.create(:samplable => @subject)
+      @sample = TestSample.create({:samplable => @subject})
       @stat = TestStat.new :property, :calculable => @sample
     end
 
@@ -59,11 +59,27 @@ module ActiveMetric
       assert_equal 4.5, stat.value
     end
 
-    test "can calculate derivative" do
+    test "can calculate derivative without seed_measurement" do
       stat = Derivative.new(:value, :calculable => @sample)
-      stat.expects(:sample_duration_in_seconds).times(10).returns(0,1,2,3,4,5,6,7,8,10)
-      test_stat(stat, 10.times)
-      assert_equal 0.9, stat.value
+      @sample.stubs(:seed_measurement).returns(nil)
+
+      @sample.expects(:duration_from_previous_sample_in_seconds).times(2).returns(0,1)
+      test_stat(stat, [1,2])
+      slope_of_one = 1.0
+
+      assert_equal slope_of_one, stat.value
+    end
+
+    test "can calculate derivative with seed_measurement " do
+      stat = Derivative.new(:value, :calculable => @sample)
+
+      @sample.stubs(:seed_measurement).returns(test_seed_measurement)
+      @sample.expects(:duration_from_previous_sample_in_seconds).times(2).returns(1,2)
+      test_stat(stat, [2,3])
+
+      slope_of_one = 1.0
+
+      assert_equal slope_of_one, stat.value
     end
 
     test "can calculate sum" do
@@ -98,8 +114,12 @@ module ActiveMetric
       stat.complete
     end
 
-
-
+    def test_seed_measurement
+      seed_measurement = mock()
+      seed_measurement.stubs(:value).returns(1)
+      seed_measurement.stubs(:timestamp).returns(1)
+      seed_measurement
+    end
 
   end
 end

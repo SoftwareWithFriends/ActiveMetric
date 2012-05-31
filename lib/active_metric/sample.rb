@@ -55,6 +55,11 @@ module ActiveMetric
       return 0
     end
 
+    def duration_from_previous_sample_in_seconds
+      return duration_in_seconds unless seed_measurement
+      end_time - seed_measurement.timestamp
+    end
+
     def method_missing(method, *args)
       self.class.send(:define_method, method.to_sym) { get_stat_by_name(method) }
       get_stat_by_name(method)
