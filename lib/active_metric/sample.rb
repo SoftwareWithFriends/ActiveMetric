@@ -17,10 +17,11 @@ module ActiveMetric
 
     index :timestamp
 
-    def initialize(options = {}, measurement = nil)
+
+    def initialize(attr = {}, options = {}, measurement = nil)
       @seed_measurement = measurement
       @latest_measurement = nil
-      super(options)
+      super(attr, options)
       if stats.empty?
         self.class.stats_defined.each do |prototype|
           self.stats << prototype[:klass].new(prototype[:name_of_stat])
@@ -119,7 +120,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.new({:samplable => self.samplable, :interval => interval}, @latest_measurement)
+      self.class.new({:samplable => self.samplable, :interval => interval},{},@latest_measurement)
     end
 
     def self.stats_defined

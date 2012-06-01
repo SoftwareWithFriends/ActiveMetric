@@ -153,10 +153,18 @@ module ActiveMetric
 
       seed_measurement.expects(:timestamp).returns(100)
 
-      sample = TestSample.new({}, seed_measurement)
+      sample = TestSample.new({},{}, seed_measurement)
       sample.expects(:end_time).returns(200)
 
       assert_equal 100, sample.duration_from_previous_sample_in_seconds
+    end
+
+    test "passing in just a hash to create sets seed measurement to nil" do
+      subject = TestSubject.new
+
+      sample = TestSample.create( {:samplable => subject, :foo => "bar"} )
+      assert_nil sample.seed_measurement
+
     end
 
   end
