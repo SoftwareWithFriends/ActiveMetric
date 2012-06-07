@@ -11,6 +11,7 @@ require 'active_metric/statistics/defaults'
 require 'active_metric/statistics/standard_deviation'
 require 'active_metric/report'
 require 'active_metric/calculators/reservoir'
+require 'active_metric/report_view_model'
 
 
 module ActiveMetric

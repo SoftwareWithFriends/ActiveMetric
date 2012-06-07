@@ -86,6 +86,10 @@ module ActiveMetric
       ! interval
     end
 
+    def row_id
+      samplable.to_param
+    end
+
     private
 
     def set_start_time(measurement)

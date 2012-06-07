@@ -23,6 +23,10 @@ module ActiveMetric
       0
     end
 
+    def view_model
+      nil
+    end
+
     def subjects_by_type
       subjects_type = {}
       subjects.each do |subject|
@@ -43,7 +47,6 @@ module ActiveMetric
       return "#{self.class.parent}::#{method.to_s.classify}".constantize if method.to_s.match /subjects$/
     rescue NameError
     end
-
 
   end
 end
