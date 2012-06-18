@@ -7,6 +7,10 @@ module ActiveMetric
       data.values
     end
 
+    def has_series
+      true
+    end
+
     def update_series_data
       self.series_data ||= initialize_cache
       remove_last_sample_from_cache
