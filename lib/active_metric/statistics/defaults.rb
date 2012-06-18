@@ -74,4 +74,10 @@ module ActiveMetric
     end
   end
 
+  class Last < Stat
+    def calculate(measurement)
+      self.value = measurement.send(self.property)
+    end
+  end
+
 end
