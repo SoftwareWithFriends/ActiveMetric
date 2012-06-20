@@ -16,3 +16,5 @@ gem "mongoid", :git => "git://github.com/mongoid/mongoid.git"
 
 # To use debugger
 # gem 'ruby-debug'
+
+gem 'minitest-reporters'

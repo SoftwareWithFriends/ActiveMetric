@@ -85,4 +85,17 @@ module ActiveMetric
       self.value += 1
     end
   end
+
+  class TrueCount < Stat
+    def calculate(measurement)
+      self.value +=1 if measurement.send(self.property)
+    end
+  end
+
+  class FalseCount < Stat
+      def calculate(measurement)
+        self.value +=1 unless measurement.send(self.property)
+      end
+  end
+
 end

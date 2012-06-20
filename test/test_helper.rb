@@ -9,6 +9,14 @@ Rails.backtrace_cleaner.remove_silencers!
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
+require 'minitest/reporters'
+MiniTest::Unit.runner = MiniTest::SuiteRunner.new
+if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]
+  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMineReporter.new
+else
+  MiniTest::Unit.runner.reporters << MiniTest::Reporters::ProgressReporter.new
+end
+
 module ActiveMetric
   INTERVAL_LENGTH = 5
 

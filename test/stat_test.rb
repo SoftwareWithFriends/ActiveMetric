@@ -100,6 +100,20 @@ module ActiveMetric
       assert_equal 10, stat.value
     end
 
+    test "can calculate true count" do
+      stat = TrueCount.new(:value, :calculabe => @sample)
+      values = [true,true,false]
+      test_stat(stat, values)
+      assert_equal 2, stat.value
+    end
+
+    test "can calculate false count" do
+      stat = FalseCount.new(:value, :calculabe => @sample)
+      values = [true,true,false]
+      test_stat(stat, values)
+      assert_equal 1, stat.value
+    end
+
 
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
