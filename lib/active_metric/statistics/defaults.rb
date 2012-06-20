@@ -80,4 +80,9 @@ module ActiveMetric
     end
   end
 
+  class Count < Stat
+    def calculate(measurement)
+      self.value += 1
+    end
+  end
 end

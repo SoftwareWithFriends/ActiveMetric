@@ -94,6 +94,12 @@ module ActiveMetric
       assert_equal 9, stat.value
     end
 
+    test "can calculate count" do
+      stat = Count.new(:value, :calculable => @sample)
+      test_stat(stat, 10.times)
+      assert_equal 10, stat.value
+    end
+
 
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
