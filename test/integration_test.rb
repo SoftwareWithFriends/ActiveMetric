@@ -109,6 +109,26 @@ module ActiveMetric
       assert_equal 4.0, subject.eightieth_value
     end
 
+    test "subjects should delegate to document before summaries" do
+      report = Report.create
+      subject = TestSubject.create :report => report, :test_field => "subject name"
+      6.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+      assert_equal "subject name", subject.test_field
+      assert_equal 4.0, subject.eightieth_value
+    end
+
+    test "subjects should be able to delegate to non stat properties on summary" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      6.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+      assert_equal 5, subject.duration_in_seconds
+      assert_equal 5, subject.duration_in_seconds
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)

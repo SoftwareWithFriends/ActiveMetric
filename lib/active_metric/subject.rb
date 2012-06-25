@@ -11,14 +11,22 @@ module ActiveMetric
     field :series_data, :type => Hash
 
     def method_missing(method, *args)
-      self.class.send(:define_method, method.to_sym) { summary.send(method).value }
-      summary.send(method).value
+      self.class.send(:define_method, method.to_sym) { value_from_summary(method) }
+      value_from_summary(method)
+    end
+
+    def value_from_summary(method)
+      ret_value = summary.send(method)
+      if ret_value.is_a?(Stat)
+        return ret_value.value
+      end
+      ret_value
     end
 
     def summary
       @summary ||= samples.where(:interval => nil).first ||
           self.class.summary_type.create(:samplable => self,
-                                        :interval   => nil)
+                                         :interval   => nil)
     end
 
     def reservoir
@@ -69,7 +77,7 @@ module ActiveMetric
     def current_sample
       @current_sample ||= interval_samples.last ||
           self.class.sample_type.new(:samplable => self,
-                                        :interval   => self.class.interval_length)
+                                     :interval   => self.class.interval_length)
     end
 
     def headers_for_table

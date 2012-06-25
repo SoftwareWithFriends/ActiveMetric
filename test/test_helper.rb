@@ -40,6 +40,7 @@ module ActiveMetric
   end
 
   class TestSubject < Subject
+    field :test_field
     calculated_with TestSample, INTERVAL_LENGTH
   end
 
