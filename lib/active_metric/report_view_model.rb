@@ -70,7 +70,7 @@ module ActiveMetric
         @rows = []
         @headers = template.headers
         table_data.each do |row_data|
-          @rows << RowViewModel.new(row_data, template.columns, row_data.to_param)
+          @rows << RowViewModel.new(row_data, template.columns)
         end
       end
     end
@@ -78,10 +78,12 @@ module ActiveMetric
     class RowViewModel
       attr_reader :cells
       attr_reader :row_id
+      attr_reader :has_series
 
-      def initialize(row_data, columns, row_id)
+      def initialize(row_data, columns)
         @cells = []
-        @row_id = row_id
+        @row_id = row_data.to_param
+        @has_series = row_data.has_series
         columns.each do |col|
           value = row_data.send(col.field)
           cells << CellViewModel.new(value, col.format_options)

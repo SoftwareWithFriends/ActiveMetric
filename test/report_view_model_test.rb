@@ -31,6 +31,7 @@ module ActiveMetric
       table.rows.each do |row|
         assert_equal expected_cells, row.cells.map(&:value)
         assert_equal expected_cell_options, row.cells.map(&:format_options)
+        assert row.has_series
       end
     end
 
@@ -77,6 +78,7 @@ module ActiveMetric
                                 field3: 3)
 
       subject.stubs(:to_param).returns("1")
+      subject.stubs(:has_series).returns(true)
       [subject]
     end
 
