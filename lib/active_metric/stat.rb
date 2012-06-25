@@ -7,6 +7,7 @@ module ActiveMetric
     embedded_in :calculable, :polymorphic => true
     field :value, :type => Float, :default => 0
     field :property, :type => String
+    field :force_class, default: ""
 
     def initialize(property,*args)
       super(*args)

@@ -167,5 +167,21 @@ module ActiveMetric
 
     end
 
+    test "can instantiate a sample that has a stat whose class no longer exists" do
+      subject = TestSubject.new
+
+      sample = TestSample.create( {:samplable => subject, :foo => "bar"} )
+      stat = Stat.new( value: 5.5)
+      stat.send(:_type=,"ActiveMetric::BadClass")
+      sample.stats << stat
+      sample.save!
+
+      assert_nothing_raised do
+        TestSample.find(sample.id)
+        p sample.stats
+      end
+
+    end
+
   end
 end

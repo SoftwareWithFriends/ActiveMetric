@@ -4,7 +4,8 @@ module ActiveMetric
 
     belongs_to :samplable, :polymorphic => true
 
-    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true
+    embeds_many :stats, :class_name => "ActiveMetric::Stat",
+                :as => :calculable, :cascade_callbacks => true
 
     attr_accessor :seed_measurement, :latest_measurement
 
@@ -21,7 +22,11 @@ module ActiveMetric
     def initialize(attr = {}, options = {}, measurement = nil)
       @seed_measurement = measurement
       @latest_measurement = nil
-      super(attr, options)
+      begin
+        super(attr, options)
+      rescue NameError => e
+
+      end
       if stats.empty?
         self.class.stats_defined.each do |prototype|
           self.stats << prototype[:klass].new(prototype[:name_of_stat])
