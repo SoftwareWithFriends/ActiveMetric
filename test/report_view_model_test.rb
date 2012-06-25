@@ -30,7 +30,7 @@ module ActiveMetric
       expected_cell_options = [{},{:precision =>2},{:format => :duration_with_format}]
       table.rows.each do |row|
         assert_equal expected_cells, row.cells.map(&:value)
-        assert_equal expected_cell_options, row.cells.map(&:options)
+        assert_equal expected_cell_options, row.cells.map(&:format_options)
       end
     end
 
