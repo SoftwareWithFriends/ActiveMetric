@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 module ActiveMetric
 
@@ -96,6 +96,17 @@ module ActiveMetric
 
       assert_equal 4.0, subject.summary.eightieth_value.value
 
+    end
+
+    test "subjects should delegate to summaries" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      6.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+
+      assert_equal 4.0, subject.eightieth_value
+      assert_equal 4.0, subject.eightieth_value
     end
 
     private

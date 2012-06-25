@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "test_helper"
 
 module ActiveMetric
   class ReportViewModelTest < ActiveSupport::TestCase
@@ -70,12 +70,10 @@ module ActiveMetric
     end
 
     def subjects
-      summary = create_row_data(field1: "name",
-                                   field2: 2.8345,
-                                   field3: 3)
+      subject = create_row_data(field1: "name",
+                                field2: 2.8345,
+                                field3: 3)
 
-      subject = mock
-      subject.stubs(:summary).returns(summary)
       subject.stubs(:to_param).returns("1")
       [subject]
     end
@@ -83,9 +81,7 @@ module ActiveMetric
     def create_row_data(values)
       row_data = mock
       values.each do |key,value|
-        stat = mock
-        stat.stubs(:value).returns(value)
-        row_data.stubs(key).returns(stat)
+        row_data.stubs(key).returns(value)
       end
       row_data
     end

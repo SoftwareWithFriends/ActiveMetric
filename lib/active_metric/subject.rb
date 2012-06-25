@@ -10,6 +10,11 @@ module ActiveMetric
     field :name, :type => String
     field :series_data, :type => Hash
 
+    def method_missing(method, *args)
+      self.class.send(:define_method, method.to_sym) { summary.send(method).value }
+      summary.send(method).value
+    end
+
     def summary
       @summary ||= samples.where(:interval => nil).first ||
           self.class.summary_type.create(:samplable => self,

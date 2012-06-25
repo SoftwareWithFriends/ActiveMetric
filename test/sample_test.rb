@@ -167,12 +167,5 @@ module ActiveMetric
 
     end
 
-    test "summaries respond to name" do
-      subject = TestSubject.create(name: "name of subject")
-
-      sample = TestSample.create( {:samplable => subject} )
-      assert_equal "name of subject", sample.name
-    end
-
   end
 end

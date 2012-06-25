@@ -17,8 +17,6 @@ module ActiveMetric
 
     index :timestamp
 
-    delegate :name, :to => :samplable
-
     def initialize(attr = {}, options = {}, measurement = nil)
       @seed_measurement = measurement
       @latest_measurement = nil
@@ -28,6 +26,11 @@ module ActiveMetric
           self.stats << prototype[:klass].new(prototype[:name_of_stat])
         end
       end
+    end
+
+    def method_missing(method, *args)
+      self.class.send(:define_method, method.to_sym) { get_stat_by_name(method) }
+      get_stat_by_name(method)
     end
 
     def calculate(measurement)
@@ -62,11 +65,6 @@ module ActiveMetric
       end_time - seed_measurement.timestamp
     end
 
-    def method_missing(method, *args)
-      self.class.send(:define_method, method.to_sym) { get_stat_by_name(method) }
-      get_stat_by_name(method)
-    end
-
     def get_stat_by_name(name_of_stat)
       stats_by_name[name_of_stat] || raw_stat
     end
@@ -85,10 +83,6 @@ module ActiveMetric
 
     def is_summary?
       ! interval
-    end
-
-    def row_id
-      samplable.to_param
     end
 
     private

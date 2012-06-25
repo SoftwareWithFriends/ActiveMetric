@@ -21,10 +21,10 @@ module ActiveMetric
       @current_template.add_column(header,field,precision)
     end
 
-    def add_table(table_name, subjects, options = {})
+    def add_table(table_name, table_data, options = {})
       template = self.class.table_templates[table_name]
       raise TableDoesNotExist unless template
-      tables << TableViewModel.new(template, subjects, options)
+      tables << TableViewModel.new(template, table_data, options)
     end
 
     class TableTemplate
@@ -65,12 +65,12 @@ module ActiveMetric
       attr_reader :rows
       attr_reader :headers
 
-      def initialize(template, subjects, options)
+      def initialize(template, table_data, options)
         @title = options[:title]
         @rows = []
         @headers = template.headers
-        subjects.each do |subject|
-          @rows << RowViewModel.new(subject.summary, template.columns, subject.to_param)
+        table_data.each do |row_data|
+          @rows << RowViewModel.new(row_data, template.columns, row_data.to_param)
         end
       end
     end
@@ -83,10 +83,11 @@ module ActiveMetric
         @cells = []
         @row_id = row_id
         columns.each do |col|
-          value = row_data.send(col.field).value
+          value = row_data.send(col.field)
           cells << CellViewModel.new(value, col.precision)
         end
       end
+
     end
 
     class CellViewModel
