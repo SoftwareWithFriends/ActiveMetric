@@ -7,8 +7,8 @@ module ActiveMetric
 
       table :table1 do
         column "header 1", :field1
-        column "header 2", :field2, 2
-        column "header 3", :field3
+        column "header 2", :field2, :precision => 2
+        column "header 3", :field3, :format => :duration_with_format
       end
 
       table :table2 do
@@ -27,10 +27,11 @@ module ActiveMetric
       assert_equal expected_headers, table.headers
 
       expected_cells = ["name",2.8345, 3]
+      expected_cell_options = [{},{:precision =>2},{:format => :duration_with_format}]
       table.rows.each do |row|
         assert_equal expected_cells, row.cells.map(&:value)
+        assert_equal expected_cell_options, row.cells.map(&:options)
       end
-
     end
 
     test "cannot add a table that does not exist" do
@@ -61,6 +62,7 @@ module ActiveMetric
       assert_table_data table2_data, rvm.tables[1]
       assert_table_data table3_data, rvm.tables[2]
     end
+
 
     def assert_table_data(data, table)
       table.rows.each do |row|

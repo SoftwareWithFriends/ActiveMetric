@@ -17,8 +17,8 @@ module ActiveMetric
       @table_templates ||= {}
     end
 
-    def self.column(header, field, precision = 0)
-      @current_template.add_column(header,field,precision)
+    def self.column(header, field, options = {})
+      @current_template.add_column(header,field,options)
     end
 
     def add_table(table_name, table_data, options = {})
@@ -36,8 +36,8 @@ module ActiveMetric
         @columns = []
       end
 
-      def add_column(header,field, precision)
-        @columns << ColumnTemplate.new(header, field, precision)
+      def add_column(header,field, options)
+        @columns << ColumnTemplate.new(header, field, options)
       end
 
       def headers
@@ -49,12 +49,12 @@ module ActiveMetric
     class ColumnTemplate
       attr_reader :header
       attr_reader :field
-      attr_reader :precision
+      attr_reader :options
 
-      def initialize(header, field, precision)
+      def initialize(header, field, options)
         @header = header
         @field = field
-        @precision = precision
+        @options = options
       end
 
     end
@@ -84,7 +84,7 @@ module ActiveMetric
         @row_id = row_id
         columns.each do |col|
           value = row_data.send(col.field)
-          cells << CellViewModel.new(value, col.precision)
+          cells << CellViewModel.new(value, col.options)
         end
       end
 
@@ -92,11 +92,11 @@ module ActiveMetric
 
     class CellViewModel
       attr_reader :value
-      attr_reader :precision
+      attr_reader :options
 
-      def initialize(value, precision)
+      def initialize(value, options)
         @value = value
-        @precision = precision
+        @options = options
       end
     end
 
