@@ -17,6 +17,7 @@ module ActiveMetric
 
     index :timestamp
 
+    delegate :name, :to => :samplable
 
     def initialize(attr = {}, options = {}, measurement = nil)
       @seed_measurement = measurement
