@@ -17,8 +17,8 @@ module ActiveMetric
       @table_templates ||= {}
     end
 
-    def self.column(header, field, options = {})
-      @current_template.add_column(header,field,options)
+    def self.column(header, field, format_options = {})
+      @current_template.add_column(header,field,format_options)
     end
 
     def add_table(table_name, table_data, options = {})
@@ -36,8 +36,8 @@ module ActiveMetric
         @columns = []
       end
 
-      def add_column(header,field, options)
-        @columns << ColumnTemplate.new(header, field, options)
+      def add_column(header,field, format_options)
+        @columns << ColumnTemplate.new(header, field, format_options)
       end
 
       def headers
@@ -49,12 +49,12 @@ module ActiveMetric
     class ColumnTemplate
       attr_reader :header
       attr_reader :field
-      attr_reader :options
+      attr_reader :format_options
 
-      def initialize(header, field, options)
+      def initialize(header, field, format_options)
         @header = header
         @field = field
-        @options = options
+        @format_options = format_options
       end
 
     end
@@ -84,7 +84,7 @@ module ActiveMetric
         @row_id = row_id
         columns.each do |col|
           value = row_data.send(col.field)
-          cells << CellViewModel.new(value, col.options)
+          cells << CellViewModel.new(value, col.format_options)
         end
       end
 
@@ -92,11 +92,11 @@ module ActiveMetric
 
     class CellViewModel
       attr_reader :value
-      attr_reader :options
+      attr_reader :format_options
 
-      def initialize(value, options)
+      def initialize(value, format_options)
         @value = value
-        @options = options
+        @format_options = format_options
       end
     end
 
