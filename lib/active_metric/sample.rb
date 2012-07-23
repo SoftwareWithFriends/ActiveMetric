@@ -17,7 +17,7 @@ module ActiveMetric
 
     index(:timestamp => -1)
 
-    def initialize(attr = {}, options = {}, measurement = nil)
+    def initialize(attr = nil, options = nil, measurement = nil)
       @seed_measurement = measurement
       @latest_measurement = nil
       super(attr, options)
@@ -26,7 +26,6 @@ module ActiveMetric
           stats << prototype[:klass].new(prototype[:name_of_stat])
         end
       end
-      self.save
     end
 
     def method_missing(method, *args)
@@ -49,7 +48,6 @@ module ActiveMetric
     end
 
     def complete
-      p measurement_count
       return false if measurement_count < 1
       self.stats.each do |statistic|
         statistic.complete
