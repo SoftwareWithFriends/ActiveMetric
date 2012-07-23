@@ -71,7 +71,7 @@ module ActiveMetric
       self.current_sample.complete
       self.update_series_data
 
-      self.safely.save
+      self.save!
     end
 
     def current_sample

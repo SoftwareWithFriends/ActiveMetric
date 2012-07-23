@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 module ActiveMetric
 
@@ -27,6 +27,7 @@ module ActiveMetric
 
     test "measurements default timestamp to now" do
       assert @measurement.timestamp
+      sleep(1)
       measurement2 = TestMeasurement.new
       assert measurement2.timestamp
 

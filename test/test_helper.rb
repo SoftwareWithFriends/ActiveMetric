@@ -51,7 +51,7 @@ class ActiveSupport::TestCase
   setup :clear_database
   teardown :clear_database
   def clear_database
-    Mongoid.database.collections.select { |c| c.name != 'system.indexes' }.each(&:drop)
+    Mongoid.default_session.collections.select { |c| c.name != 'system.indexes' }.each(&:drop)
   end
 
   def assert_within_range(range, value)

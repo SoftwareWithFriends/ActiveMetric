@@ -1,6 +1,6 @@
 module ActiveMetric
   class Min < Stat
-    field :value, :type => Float, :default => (1 << 64)
+    field :value, :type => Float, :default => (1 << 62)
     def calculate(measurement)
       self.value = [self.value, measurement.send(self.property)].min
     end
@@ -22,7 +22,7 @@ module ActiveMetric
     end
 
     def complete
-      self.value = (self.sum / self.count).to_f
+      self.value = (self.sum.to_f / self.count)
       super
     end
   end

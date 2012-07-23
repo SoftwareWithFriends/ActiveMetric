@@ -4,7 +4,7 @@ module ActiveMetric
 
     belongs_to :samplable, :polymorphic => true
 
-    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable, :cascade_callbacks => true
+    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable
 
     attr_accessor :seed_measurement, :latest_measurement
 
@@ -15,7 +15,7 @@ module ActiveMetric
     field :measurement_count, :type => Integer, :default => 0
     field :sum,               :type => Integer, :default => 0
 
-    index :timestamp
+    index(:timestamp => -1)
 
     def initialize(attr = {}, options = {}, measurement = nil)
       @seed_measurement = measurement
@@ -23,9 +23,10 @@ module ActiveMetric
       super(attr, options)
       if stats.empty?
         self.class.stats_defined.each do |prototype|
-          self.stats << prototype[:klass].new(prototype[:name_of_stat])
+          stats << prototype[:klass].new(prototype[:name_of_stat])
         end
       end
+      self.save
     end
 
     def method_missing(method, *args)
@@ -48,11 +49,12 @@ module ActiveMetric
     end
 
     def complete
+      p measurement_count
       return false if measurement_count < 1
       self.stats.each do |statistic|
         statistic.complete
       end
-      self.safely.save!
+      self.save!
     end
 
     def duration_in_seconds

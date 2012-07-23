@@ -72,8 +72,10 @@ module ActiveMetric
 
     test "should not save if sample has no measurements" do
       subject = TestSubject.new
+      assert_equal 0, TestSample.count
       sample = TestSample.new(:interval => 6, :samplable => subject)
-
+      p sample
+      assert_equal 0, TestSample.count
       assert_equal false, sample.complete
       assert_equal 0, TestSample.count
     end
@@ -88,7 +90,7 @@ module ActiveMetric
       measurements.each do |measurement|
         sample.calculate(measurement)
       end
-      sample.safely.save!
+      sample.save!
       sample = TestSample.find sample.id
       assert_equal (4), sample.timestamp
     end
