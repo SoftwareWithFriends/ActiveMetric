@@ -10,6 +10,9 @@ module ActiveMetric
     field :name, :type => String
     field :series_data, :type => Hash
 
+    index(:report_id => -1)
+
+
     def method_missing(method, *args)
       self.class.send(:define_method, method.to_sym) { value_from_summary(method) }
       value_from_summary(method)

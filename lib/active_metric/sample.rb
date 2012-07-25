@@ -16,6 +16,7 @@ module ActiveMetric
     field :sum,               :type => Integer, :default => 0
 
     index(:timestamp => -1)
+    index(:samplable_id => -1)
 
     def initialize(attr = nil, options = nil, measurement = nil)
       @seed_measurement = measurement
