@@ -10,7 +10,7 @@ module ActiveMetric
     field :name, :type => String
     field :series_data, :type => Hash
 
-    index(:report_id => -1)
+    index({:report_id => -1},{:background => true})
 
 
     def method_missing(method, *args)
