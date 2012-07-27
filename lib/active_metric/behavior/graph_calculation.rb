@@ -2,49 +2,51 @@ module ActiveMetric
   module GraphCalculation
     #REQUIRES SUMMARY AND INTERVAL SAMPLES AND SERIES DATA
 
-    def series
-      data = series_data || initialize_cache
-      data.values
+    def self.included(klass)
+      klass.has_one :graph_view_model,
+                    :class_name => "ActiveMetric::GraphViewModel", :autosave => true
+      klass.after_initialize do
+        self.graph_view_model ||= initialize_graph_view_model
+      end
     end
 
-    def has_series
+    def series
+      return nil unless attributes["series_data"]
+      attributes["series_data"].values
+    end
+
+
+    def has_graph_data
       true
     end
 
-    def update_series_data
-      self.series_data ||= initialize_cache
+    def update_graph_model
       remove_last_sample_from_cache
 
       remaining_interval_samples.each do |sample|
         sample.stats.each do|stat|
           if stat_meta_data[stat.access_name]
-            series_data[stat.access_name.to_s]["data"] << [time(sample.timestamp), stat.value] if sample.timestamp && start_time
+            graph_view_model.series_for(stat.access_name.to_s).push([time(sample.timestamp), stat.value]) if sample.timestamp && start_time
           end
         end
       end
+
       self.save!
     end
 
-    def initialize_cache
-      empty_cache = {}
-      stat_meta_data.values.each do |meta_data|
-        axis = meta_data[:axis]
-        next if axis < 0
-        name = meta_data[:name].to_s
-        empty_cache[name] = {"name" => name, "data" => [], "yAxis" => axis}
-      end
-      empty_cache
+    def initialize_graph_view_model
+      GraphViewModel.create_from_stat_meta_data(stat_meta_data.values, name: name)
     end
 
     def remove_last_sample_from_cache
-      series_data.values.each do |cache|
-        cache["data"].pop
+      graph_view_model.series_data.each do |series|
+        series.pop
       end
     end
 
     def remaining_interval_samples
-      sample_skip = size_of_cache_data
-      interval_samples.skip(sample_skip)
+      sample_skip = graph_view_model.size
+      interval_samples[sample_skip..-1]
     end
 
     def time(sample_time)
@@ -57,15 +59,6 @@ module ActiveMetric
 
     def start_time
       @start_time ||= summary.start_time
-    end
-
-    def size_of_cache_data
-      if series_data.first
-        sample_skip = series_data.values.first["data"].size
-      else
-        sample_skip = 0
-      end
-      sample_skip
     end
 
     def debug(message)

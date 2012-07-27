@@ -49,7 +49,6 @@ end
 class ActiveSupport::TestCase
 
   setup :clear_database
-  teardown :clear_database
   def clear_database
     Mongoid.default_session.collections.select { |c| c.name != 'system.indexes' }.each(&:drop)
   end

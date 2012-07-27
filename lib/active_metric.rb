@@ -12,6 +12,9 @@ require 'active_metric/statistics/standard_deviation'
 require 'active_metric/report'
 require 'active_metric/calculators/reservoir'
 require 'active_metric/report_view_model'
+require 'active_metric/graph_view_model'
+require 'active_metric/series_data'
+require 'active_metric/point_series_data'
 
 
 module ActiveMetric

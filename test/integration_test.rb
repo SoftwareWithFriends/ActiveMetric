@@ -80,7 +80,7 @@ module ActiveMetric
         subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
       end
       subject.complete
-      assert_equal 47, subject.interval_samples.skip(9).first.timestamp
+      assert_equal 47, subject.interval_samples[9].timestamp
     end
 
     test "summary should update when samples changes" do

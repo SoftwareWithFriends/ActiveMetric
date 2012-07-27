@@ -168,5 +168,15 @@ module ActiveMetric
 
     end
 
+    test "does not generate metadata for negative axis" do
+      sample = TestSample.new
+
+      stat = sample.stats.select{|stat| stat.access_name == :test_response_codes }.first
+      assert_equal -1, stat.axis
+
+      meta_data = sample.stat_meta_data
+      assert_nil meta_data[:test_response_codes]
+    end
+
   end
 end

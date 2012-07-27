@@ -8,9 +8,10 @@ module ActiveMetric
     has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
 
     field :name, :type => String
-    field :series_data, :type => Hash
 
     index({:report_id => -1},{:background => true})
+
+
 
 
     def method_missing(method, *args)
@@ -45,7 +46,7 @@ module ActiveMetric
     end
 
     def interval_samples
-      samples.where(:interval => self.class.interval_length).order_by([:timestamp, :asc])
+      samples.reject{|s| s.interval.nil?}.sort_by(&:timestamp)
     end
 
     def calculate(measurement)
@@ -72,7 +73,7 @@ module ActiveMetric
     def complete
       self.summary.complete
       self.current_sample.complete
-      self.update_series_data
+      self.update_graph_model
 
       self.save!
     end

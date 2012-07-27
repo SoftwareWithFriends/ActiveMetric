@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "../test_helper"
 
 module ActiveMetric
   class GraphCalculationTest < ActiveSupport::TestCase
@@ -13,60 +13,32 @@ module ActiveMetric
 
       subject.complete
 
-      report.subjects.each do |subject|
-        subject.update_series_data
-        assert_equal [[2,4],[7,9]], subject.series_data["max_value"]["data"]
-        assert_equal [[2,0],[7,5]],  subject.series_data["min_value"]["data"]
-        assert_equal [[2,2],[7,7]], subject.series_data["mean_value"]["data"]
-        assert_equal [[2,4],[7,8]],  subject.series_data["eightieth_value"]["data"]
-        assert_equal [[2,4],[7,9]], subject.series_data["ninety_eighth_value"]["data"]
-      end
-    end
 
-    test "appropriately calculates current cache size" do
-      report = Report.create
-      subject = TestSubject.create :report => report
+      gvm = subject.graph_view_model
+
+      assert_equal [[2,4],[7,9]], gvm.series_for("max_value").data
+      assert_equal [[2,0],[7,5]], gvm.series_for("min_value").data
+      assert_equal [[2,2],[7,7]], gvm.series_for("mean_value").data
+      assert_equal [[2,4],[7,8]], gvm.series_for("eightieth_value").data
+      assert_equal [[2,4],[7,9]], gvm.series_for("ninety_eighth_value").data
 
       10.times do |value|
-        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+        subject.calculate TestMeasurement.new(:value => value + 10, :timestamp => value + 10)
       end
 
       subject.complete
-      subject.update_series_data
-      assert_equal 2, subject.size_of_cache_data
-
-      15.times do |value|
-        subject.calculate TestMeasurement.new(:value => 10 + value, :timestamp => 10 + value)
-      end
-
-      subject.complete
-      assert_equal 5, subject.size_of_cache_data
     end
 
     test "series return empty cache if no series data" do
       report = Report.create
       subject = TestSubject.create :report => report
+      stat_names = TestSubject.sample_type.new.stat_meta_data.values.map{|md| md[:name].to_s}
 
-      assert_nil subject.series_data
+      gvm = subject.graph_view_model
 
-      assert_equal [
-                       {"name"=>"max_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"min_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"mean_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"test_count", "data"=>[], "yAxis"=>1},
-                       {"name"=>"eightieth_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"standard_deviation_value", "data"=>[], "yAxis"=>0},
-                       {"name"=>"ninety_eighth_value", "data"=>[], "yAxis"=>0}].sort{|a,b| a["name"] <=> b["name"]}, subject.series.sort{|a,b| a["name"] <=> b["name"]}
+      assert_equal stat_names.sort, gvm.series_data.map(&:label).sort
     end
 
-    test "calling series does not update subject" do
-      report = Report.create
-      subject = TestSubject.create :report => report
-
-      subject.series
-
-      assert_nil subject.series_data
-    end
 
     test "update series data recalculates last sample" do
       report = Report.create
@@ -78,17 +50,19 @@ module ActiveMetric
 
       subject.complete
 
-      subject.update_series_data
+      gvm = subject.graph_view_model
 
-      assert_equal [[2,4],[6,8]], subject.series_data["max_value"]["data"]
+      assert_equal [[2,4],[6,8]], gvm.series_for("max_value").data
 
 
       subject.calculate TestMeasurement.new(:value => 9, :timestamp => 9)
       subject.complete
 
       subject.update_series_data
-      assert_equal [[2,4],[7,9]], subject.series_data["max_value"]["data"]
+      assert_equal [[2,4],[7,9]], gvm.series_for("max_value").data
     end
+
+
 
   end
 end

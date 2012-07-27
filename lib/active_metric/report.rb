@@ -12,13 +12,6 @@ module ActiveMetric
       subjects.map(&:series).flatten
     end
 
-    def bust_caches
-      subjects.each do |subject|
-        subject.series_data = nil
-        subject.update_series_data
-      end
-    end
-
     def min
       0
     end
