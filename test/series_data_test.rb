@@ -3,12 +3,13 @@ require_relative "test_helper"
 module ActiveMetric
   class SeriesDataTest < ActiveSupport::TestCase
 
-    test "can instantiate from meta data" do
-      label = "name_of_stat"
-      meta_data = {:name => label, :axis => 2}
-      series = SeriesData.from_meta_data(meta_data)
+    test "can instantiate stat definition" do
+      access_name = "name_of_stat"
+      options = {axis: 2}
+      stat_definition = StatDefinition.new(:property,Min,access_name,options)
+      series = SeriesData.from_stat_definition(stat_definition)
 
-      assert_equal label, series.label
+      assert_equal access_name, series.label
       assert_equal 2, series.y_axis
       assert_equal 0, series.x_axis
     end
@@ -18,15 +19,13 @@ module ActiveMetric
       psd = PointSeriesData.new(data: [[1,1],[2,2]])
       gvm.series_data << psd
 
-      psd.pop
+      psd.pop_data
 
       assert_equal [[1,1]], psd.data
 
-      psd.push([3,3])
+      psd.push_data([3,3])
 
       assert_equal [[1,1],[3,3]], psd.data
-
-      p psd.data
     end
 
   end

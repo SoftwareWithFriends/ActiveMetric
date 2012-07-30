@@ -29,14 +29,14 @@ module ActiveMetric
       subject.complete
     end
 
-    test "series return empty cache if no series data" do
+    test "graph view model gets created from stats defined" do
       report = Report.create
       subject = TestSubject.create :report => report
-      stat_names = TestSubject.sample_type.new.stat_meta_data.values.map{|md| md[:name].to_s}
+      first_stat_name = TestSubject.sample_type.stats_defined.map{|sd| sd.access_name.to_s }.sort.first
 
       gvm = subject.graph_view_model
 
-      assert_equal stat_names.sort, gvm.series_data.map(&:label).sort
+      assert_equal first_stat_name, gvm.series_data.map(&:label).sort.first
     end
 
 

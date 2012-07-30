@@ -1,4 +1,24 @@
 module ActiveMetric
+
+  class StatDefinition
+
+    attr_reader :name_of_stat, :klass, :access_name, :options
+
+    def initialize(name_of_stat, klass, access_name, options)
+      @name_of_stat, @klass, @access_name, @options = name_of_stat, klass, access_name, options
+      @options[:axis] ||= 0
+    end
+
+    def create_stat
+      klass.new(name_of_stat)
+    end
+
+    def graphable?
+      options[:axis] >= 0
+    end
+
+  end
+
   class Sample
     include Mongoid::Document
 
@@ -23,9 +43,7 @@ module ActiveMetric
       @latest_measurement = nil
       super(attr, options)
       if stats.empty?
-        self.class.stats_defined.each do |prototype|
-          stats << prototype[:klass].new(prototype[:name_of_stat])
-        end
+        self.stats = self.class.stats_defined.map(&:create_stat)
       end
     end
 
@@ -72,14 +90,6 @@ module ActiveMetric
 
     def stats_by_name
       @stats_by_name ||= generate_stats_by_name
-    end
-
-    def stat_meta_data
-      meta_data = {}
-      stats.each do |stat|
-        meta_data[stat.access_name] = {:name => stat.access_name, :axis => stat.axis} if stat.axis >= 0
-      end
-      meta_data
     end
 
     def is_summary?
@@ -131,19 +141,30 @@ module ActiveMetric
       @custom_stats_defined ||= []
     end
 
-    def self.stat(property, stats_to_define = [:min, :mean, :max, :eightieth, :ninety_eighth])
+    def self.axises_defined
+      @axises_defined ||= []
+    end
+
+    def self.stat(property, stats_to_define = [:min, :mean, :max, :eightieth, :ninety_eighth], options = {})
       stats_to_define.each do |stat|
-        self.stats_defined << {:klass => Stat.class_for(stat), :name_of_stat => property }
+        klass = Stat.class_for(stat)
+        access_name = klass.access_name(property)
+        self.stats_defined << StatDefinition.new(property, klass, access_name, options)
       end
     end
 
     def self.custom_stat(name_of_stat, value_type,default = nil, axis = -1, &block)
-      self.stats_defined << {:name_of_stat => name_of_stat,
-                             :klass => Stat.create_custom_stat(name_of_stat,
-                                                               value_type,
-                                                               default,
-                                                               axis,
-                                                               block)}
+      custom_stat_klass = Stat.create_custom_stat(name_of_stat,
+                              value_type,
+                              default,
+                              block)
+      access_name = custom_stat_klass.access_name
+      options = {axis: axis}
+      self.stats_defined << StatDefinition.new(name_of_stat, custom_stat_klass, access_name, options)
+    end
+
+    def self.axis(options)
+      axises_defined << options
     end
 
     def raw_stat

@@ -25,9 +25,8 @@ module ActiveMetric
 
       remaining_interval_samples.each do |sample|
         sample.stats.each do|stat|
-          if stat_meta_data[stat.access_name]
-            graph_view_model.series_for(stat.access_name.to_s).push([time(sample.timestamp), stat.value]) if sample.timestamp && start_time
-          end
+          series = graph_view_model.series_for(stat.access_name.to_s)
+          series.push_data([time(sample.timestamp), stat.value]) if series && sample.timestamp && start_time
         end
       end
 
@@ -35,12 +34,14 @@ module ActiveMetric
     end
 
     def initialize_graph_view_model
-      GraphViewModel.create_from_stat_meta_data(stat_meta_data.values, name: name)
+      axises_defined = self.class.sample_type.axises_defined
+      stats_defined = self.class.sample_type.stats_defined
+      GraphViewModel.create_from_meta_data(axises_defined, stats_defined, name: name)
     end
 
     def remove_last_sample_from_cache
       graph_view_model.series_data.each do |series|
-        series.pop
+        series.pop_data
       end
     end
 
@@ -51,10 +52,6 @@ module ActiveMetric
 
     def time(sample_time)
       ((sample_time - start_time)).to_i
-    end
-
-    def stat_meta_data
-      self.class.sample_type.new.stat_meta_data
     end
 
     def start_time

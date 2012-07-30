@@ -5,12 +5,12 @@ module ActiveMetric
 
     delegate :size, :to => :data
 
-    def push(value)
+    def push_data(value)
       push_all(:data, [value])
     end
 
-    def pop
-      super(:data,1)
+    def pop_data
+      pop(:data,1)
     end
 
   end

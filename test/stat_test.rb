@@ -29,13 +29,13 @@ module ActiveMetric
 
     test "sets name for custom stat" do
       proc = Proc.new {|m|self.value = m.value}
-      stat = Stat.create_custom_stat(:property,Integer,{},0,proc).new(:property)
+      stat = Stat.create_custom_stat(:property,Integer,{},proc).new(:property)
       assert_equal :property, stat.access_name
     end
 
     test "custom stat uses block to calculate" do
       proc = Proc.new {|m| self.value = m.value}
-      stat = Stat.create_custom_stat(:property,Integer,{},0, proc).new(:property)
+      stat = Stat.create_custom_stat(:property,Integer,{}, proc).new(:property)
       measurement = mock(:value => 10)
       stat.calculate(measurement)
       assert_equal 10, stat.value

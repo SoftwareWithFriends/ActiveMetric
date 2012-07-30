@@ -10,14 +10,18 @@ module ActiveMetric
     field :approximation, :default => "high"
     field :visible, :default => true
 
-    def self.from_meta_data(meta_data)
-      series               = self.new(label: meta_data[:name].to_s)
-      series.x_axis        = meta_data[:x_axis]  if meta_data[:x_axis]
-      series.y_axis        = meta_data[:axis]  if meta_data[:axis]
-      series.approximation = meta_data[:approximation]  if meta_data[:approximation]
-      series.visible       = meta_data[:visible]  if meta_data[:visible]
+    def self.from_stat_definition(stat_definition)
+      series               = self.new(label: stat_definition.access_name.to_s)
+      options = stat_definition.options
+
+      series.x_axis        = options[:x_axis]        if options[:x_axis]
+      series.y_axis        = options[:axis]          if options[:axis]
+      series.approximation = options[:approximation] if options[:approximation]
+      series.visible       = options[:visible]       if options[:visible]
+
       series
     end
+
 
   end
 end
