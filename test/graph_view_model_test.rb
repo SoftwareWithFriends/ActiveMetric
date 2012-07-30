@@ -21,6 +21,27 @@ module ActiveMetric
       assert_equal 0, gvm.size
     end
 
+    test "can create from definitions" do
+      axises_defintions = [{index: 1, label: "second"},
+                           {index: 0, label: "first"},
+                           {index: 0, label: "actually first"}]
+      options = {name: "test graph"}
+
+      stat_definitions  = []
+      stat_definitions << stat_definition(true)
+      stat_definitions << stat_definition(true)
+      stat_definitions << stat_definition(false)
+
+      gvm = GraphViewModel.create_from_meta_data(axises_defintions, stat_definitions, options)
+
+      assert_equal 2, gvm.y_axises.size
+      assert_equal 0, gvm.x_axises.size
+
+      assert_equal 0, gvm.y_axises.first.index
+      assert_equal "actually first", gvm.y_axises.first.label
+
+      assert_equal 2, gvm.series_data.size
+    end
 
     test "can retrieve partial array" do
 
@@ -37,6 +58,11 @@ module ActiveMetric
       data = []
       x_count.times {|x| data << [x,x]}
       PointSeriesData.new(data: data, label: label)
+    end
+
+    def stat_definition(graphable)
+      axis = graphable ? 0 : -1
+      StatDefinition.new(:name_of_stat,Min,"min_name_of_stat",{axis: axis})
     end
 
   end

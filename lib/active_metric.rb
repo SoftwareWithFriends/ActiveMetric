@@ -15,6 +15,9 @@ require 'active_metric/report_view_model'
 require 'active_metric/graph_view_model'
 require 'active_metric/series_data'
 require 'active_metric/point_series_data'
+require 'active_metric/axis'
+require 'active_metric/stat_definition'
+
 
 
 module ActiveMetric

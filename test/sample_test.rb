@@ -168,5 +168,19 @@ module ActiveMetric
 
     end
 
+    test "stat definitions have proper axis" do
+      @stat_definitions = TestSample.stats_defined
+      assert_contains_axis(:min_value,0)
+      assert_contains_axis(:mean_value,0)
+      assert_contains_axis(:max_value,0)
+      assert_contains_axis(:standard_deviation_value,1)
+      assert_contains_axis(:test_count,1)
+      assert_contains_axis(:test_response_codes, -1)
+    end
+
+    def assert_contains_axis(stat,axis)
+      assert_equal axis, @stat_definitions.select {|sd| sd.access_name == stat}.first.options[:axis]
+    end
+
   end
 end

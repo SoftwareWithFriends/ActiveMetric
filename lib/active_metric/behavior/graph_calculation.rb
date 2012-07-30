@@ -15,7 +15,6 @@ module ActiveMetric
       attributes["series_data"].values
     end
 
-
     def has_graph_data
       true
     end

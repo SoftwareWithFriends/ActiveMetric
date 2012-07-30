@@ -1,25 +1,15 @@
 module ActiveMetric
 
-  class Axis
-    include Mongoid::Document
-
-    JAVA_SCRIPT_NO_OPTION = "null"
-
-    field :label, default: "units"
-    field :min, default: JAVA_SCRIPT_NO_OPTION
-    field :index, default: 0
-  end
-
-
   class GraphViewModel
     include Mongoid::Document
 
     belongs_to :subject, :class_name => "ActiveMetric::Subject", :polymorphic => true
     index({:subject_id => 1},{:background => true})
+
     field :name
     embeds_many :series_data, :class_name => "ActiveMetric::SeriesData"
-    embeds_many :axis, as: :y_axises, class_name: "ActiveMetric::Axis"
-    #embeds_many :axis, as: :x_axises, class_name: "ActiveMetric::Axis"
+    embeds_many :y_axises, class_name: "ActiveMetric::Axis"
+    embeds_many :x_axises, class_name: "ActiveMetric::Axis"
 
     def self.create_from_meta_data(axises_defined,stats_defined, options = {})
       graph = self.new(options)

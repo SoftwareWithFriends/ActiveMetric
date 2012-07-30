@@ -29,7 +29,7 @@ module ActiveMetric
 
   class TestSample < Sample
     stat :value
-    stat :value, [:standard_deviation]
+    stat :value, [:standard_deviation], axis: 1
     custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
     end
@@ -37,6 +37,9 @@ module ActiveMetric
       self.value[measurement.value.to_s] ||= 0
       self.value[measurement.value.to_s] += 1
     end
+
+    axis index: 0, label: "first axis"
+    axis index: 1, label: "second axis"
   end
 
   class TestSubject < Subject
