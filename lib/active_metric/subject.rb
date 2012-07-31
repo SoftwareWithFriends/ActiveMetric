@@ -11,9 +11,6 @@ module ActiveMetric
 
     index({:report_id => -1},{:background => true})
 
-
-
-
     def method_missing(method, *args)
       self.class.send(:define_method, method.to_sym) { value_from_summary(method) }
       value_from_summary(method)
@@ -97,7 +94,7 @@ module ActiveMetric
     end
 
     def self.sample_type
-      raise
+      nil
     end
 
     def self.interval_length

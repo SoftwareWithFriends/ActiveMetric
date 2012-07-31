@@ -9,7 +9,10 @@ module ActiveMetric
     field :name
     embeds_many :series_data, :class_name => "ActiveMetric::SeriesData"
     embeds_many :y_axises, class_name: "ActiveMetric::Axis"
-    embeds_many :x_axises, class_name: "ActiveMetric::Axis"
+
+    def ordered_y_axises
+      y_axises.asc(:index)
+    end
 
     def self.create_from_meta_data(axises_defined,stats_defined, options = {})
       graph = self.new(options)
@@ -21,7 +24,8 @@ module ActiveMetric
 
     def populate_axises(axises_defined)
       axises_defined.each do |axis_options|
-        y_axises[axis_options[:index]] = Axis.new(axis_options)
+        delete_axis_at_index(axis_options[:index])
+        y_axises << Axis.new(axis_options)
       end
     end
 
@@ -39,6 +43,16 @@ module ActiveMetric
       return 0 unless series_data.size > 0
       series_data.first.size
     end
+
+    def delete_axis_at_index(index)
+      existing_axises = y_axises.select{|axis| axis.index == index}
+      if existing_axises.size > 0
+        existing_axises.each do |existing_axis|
+          y_axises.delete(existing_axis)
+        end
+      end
+    end
+
   end
 
 

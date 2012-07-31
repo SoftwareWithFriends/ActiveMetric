@@ -33,8 +33,13 @@ module ActiveMetric
     end
 
     def initialize_graph_view_model
-      axises_defined = self.class.sample_type.axises_defined
-      stats_defined = self.class.sample_type.stats_defined
+      if self.class.sample_type
+        axises_defined = self.class.sample_type.axises_defined
+        stats_defined = self.class.sample_type.stats_defined
+      else
+        axises_defined = []
+        stats_defined = []
+      end
       GraphViewModel.create_from_meta_data(axises_defined, stats_defined, name: name)
     end
 

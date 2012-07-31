@@ -35,13 +35,34 @@ module ActiveMetric
       gvm = GraphViewModel.create_from_meta_data(axises_defintions, stat_definitions, options)
 
       assert_equal 2, gvm.y_axises.size
-      assert_equal 0, gvm.x_axises.size
 
-      assert_equal 0, gvm.y_axises.first.index
-      assert_equal "actually first", gvm.y_axises.first.label
+      index_zero_axises = gvm.y_axises.select{|axis| axis.index == 0}
+
+      assert_equal 1, index_zero_axises.size
+      assert_equal 0, index_zero_axises.first.index
+      assert_equal "actually first", index_zero_axises.first.label
 
       assert_equal 2, gvm.series_data.size
     end
+
+    test "can read y_axises sorted by index" do
+      axises_defintions = [{index: 1, label: "second"},
+                           {index: 0, label: "first"},
+                           {index: 0, label: "actually first"}]
+
+      gvm = GraphViewModel.create_from_meta_data(axises_defintions, [], {})
+
+      axises = gvm.ordered_y_axises
+
+      assert_equal 2, axises.size
+
+      assert_equal 0, axises.first.index
+      assert_equal "actually first", axises.first.label
+
+      assert_equal 1, axises.second.index
+      assert_equal "second", axises.second.label
+    end
+
 
     test "can retrieve partial array" do
 
@@ -53,6 +74,7 @@ module ActiveMetric
 
       assert_equal [[2,2],[3,3]], partial_graph.series_data.first.data
     end
+
 
     def generate_series_data(x_count, label = "label")
       data = []
