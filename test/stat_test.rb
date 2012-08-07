@@ -82,6 +82,27 @@ module ActiveMetric
       assert_equal slope_of_one, stat.value
     end
 
+    test "can calculate last derivative without seed_measurement" do
+      stat = LastDerivative.new(:value, :calculable => @sample)
+      @sample.stubs(:seed_measurement).returns(nil)
+
+      test_stat(stat, [1])
+      no_derivative = 0
+
+      assert_equal no_derivative, stat.value
+    end
+
+    test "can calculate last derivative with seed measurement" do
+      stat = LastDerivative.new(:value, :calculable => @sample)
+
+      @sample.stubs(:seed_measurement).returns(test_seed_measurement)
+      test_stat(stat, [2,4],[2,3])
+
+      slope_of_two = 2.0
+
+      assert_equal slope_of_two, stat.value
+    end
+
     test "can calculate sum" do
       stat = Sum.new(:value, :calculable => @sample)
       test_stat(stat, 10.times)
@@ -133,9 +154,9 @@ module ActiveMetric
 
     private
 
-    def test_stat(stat, values)
-      values.each  do |value|
-        stat.calculate TestMeasurement.new(:value => value, :timestamp => value)
+    def test_stat(stat, values, timestamps = values.to_a)
+      values.each_with_index  do |value, index|
+        stat.calculate TestMeasurement.new(:value => value, :timestamp => timestamps[index])
       end
       stat.complete
     end

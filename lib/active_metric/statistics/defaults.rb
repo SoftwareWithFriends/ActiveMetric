@@ -35,17 +35,35 @@ module ActiveMetric
       self.last  = property_from_measurement(measurement)
       self.first ||= (property_from_measurement(calculable.seed_measurement) || self.last)
       duration_from_seed_measurement = calculable.duration_from_previous_sample_in_seconds
+      self.value = calculate_derivative(first, last, duration_from_seed_measurement)
+    end
 
-      if duration_from_seed_measurement > 0
-        self.value = (self.last - self.first).to_f / duration_from_seed_measurement
+    def calculate_derivative(first, last,duration)
+      if duration > 0
+        (last - first).to_f / duration
       else
-        self.value = 0
+        0
       end
     end
 
     def property_from_measurement(measurement)
       return nil unless measurement
       measurement.send(self.property)
+    end
+
+  end
+
+  class LastDerivative < Derivative
+    field :previous_timestamp
+
+    def calculate(measurement)
+      self.first = (self.last || property_from_measurement(calculable.seed_measurement) || property_from_measurement(measurement))
+
+      duration = measurement.timestamp - (self.previous_timestamp || measurement.timestamp)
+      self.previous_timestamp = measurement.timestamp
+
+      self.last  = property_from_measurement(measurement)
+      self.value = calculate_derivative(first, last, duration)
     end
 
   end
