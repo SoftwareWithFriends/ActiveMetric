@@ -3,7 +3,6 @@ require_relative "test_helper"
 module ActiveMetric
   class GraphViewModelTest < ActiveSupport::TestCase
 
-    EULERS_DAY= MONGO_MAX_LIMIT = (1 << 31) - 1
 
     test "can retrieve series by label" do
       gvm = GraphViewModel.create
@@ -65,20 +64,30 @@ module ActiveMetric
 
 
     test "can retrieve partial array" do
-
-      graph_view_model = GraphViewModel.create()
+      subject = Subject.create
+      graph_view_model = subject.graph_view_model
       graph_view_model.series_data << generate_series_data(4)
+      graph_view_model.series_data << generate_series_data(4, [[5,5],[6,6],[7,7],[8,8]])
 
-      partial_graph = GraphViewModel.where(_id: graph_view_model.id).
-          slice("series_data.data" => [2,MONGO_MAX_LIMIT]).first
+
+      partial_graph = subject.graph_view_model_starting_at(2)
 
       assert_equal [[2,2],[3,3]], partial_graph.series_data.first.data
+      assert_equal [[7,7],[8,8]], partial_graph.series_data.second.data
+
+      graph_view_model.series_data[0].push_data([9,9])
+      graph_view_model.series_data[1].push_data([10,10])
+
+      partial_graph = subject.graph_view_model_starting_at(2)
+
+      partial_graph.series_data.each_with_index do |series, index|
+        p index
+        p series
+      end
     end
 
-
-    def generate_series_data(x_count, label = "label")
-      data = []
-      x_count.times {|x| data << [x,x]}
+    def generate_series_data(x_count, data = [], label = "label")
+      x_count.times {|x| data << [x,x]} if data.empty?
       PointSeriesData.new(data: data, label: label)
     end
 

@@ -19,9 +19,7 @@ module ActiveMetric
       true
     end
 
-    def update_graph_model
-      remove_last_sample_from_cache
-
+    def update_graph_model(remaining_interval_samples)
       remaining_interval_samples.each do |sample|
         sample.stats.each do|stat|
           series = graph_view_model.series_for(stat.access_name.to_s)
@@ -41,17 +39,6 @@ module ActiveMetric
         stats_defined = []
       end
       GraphViewModel.create_from_meta_data(axises_defined, stats_defined, name: name)
-    end
-
-    def remove_last_sample_from_cache
-      graph_view_model.series_data.each do |series|
-        series.pop_data
-      end
-    end
-
-    def remaining_interval_samples
-      sample_skip = graph_view_model.size
-      interval_samples[sample_skip..-1]
     end
 
     def time(sample_time)

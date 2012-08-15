@@ -3,6 +3,8 @@ module ActiveMetric
   class GraphViewModel
     include Mongoid::Document
 
+    EULERS_DAY= MONGO_MAX_LIMIT = (1 << 31) - 1
+
     belongs_to :subject, :class_name => "ActiveMetric::Subject", :polymorphic => true
     index({:subject_id => 1},{:background => true})
 

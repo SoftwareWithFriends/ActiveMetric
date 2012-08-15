@@ -129,6 +129,16 @@ module ActiveMetric
       assert_equal 5, subject.duration_in_seconds
     end
 
+    test "subjects should return outcome of calculation" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      assert subject.calculate TestMeasurement.new(:value => 1, :timestamp => 1)
+      assert_nil subject.calculate TestMeasurement.new(:value => 2, :timestamp => 2)
+      assert_nil subject.calculate TestMeasurement.new(:value => 6, :timestamp => 6)
+      assert_equal 5, subject.duration_in_seconds
+      assert_equal 5, subject.duration_in_seconds
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)
