@@ -15,14 +15,13 @@ module ActiveMetric
     field :timestamp,         :type => Integer
     field :measurement_count, :type => Integer, :default => 0
     field :sum,               :type => Integer, :default => 0
+    field :sample_index,      :type => Integer
 
-    index(:timestamp => -1)
-    index({:samplable_id => 1}, {:background => true})
-
-    def initialize(attr = nil, options = nil, measurement = nil)
+    def initialize(attr = nil, options = nil, measurement = nil, index = 0)
       @seed_measurement = measurement
       @latest_measurement = nil
       super(attr, options)
+      self.sample_index = index
       if stats.empty?
         self.stats = self.class.stats_defined.map(&:create_stat)
       end
@@ -111,7 +110,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.new({:samplable => self.samplable, :interval => interval},{},@latest_measurement)
+      self.class.new({:samplable => self.samplable, :interval => interval},{},@latest_measurement, sample_index + 1)
     end
 
     def self.stats_defined

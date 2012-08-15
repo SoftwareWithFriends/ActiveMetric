@@ -73,16 +73,6 @@ module ActiveMetric
       assert_close_to 2.87, subject.summary.standard_deviation_value.value
     end
 
-    test "interval samples should order before skip" do
-      report = Report.create
-      subject = TestSubject.create :report => report
-      50.times do |value|
-        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
-      end
-      subject.complete
-      assert_equal 47, subject.interval_samples[9].timestamp
-    end
-
     test "summary should update when samples changes" do
       report = Report.create
       subject = TestSubject.create :report => report
@@ -95,7 +85,6 @@ module ActiveMetric
       subject.calculate TestMeasurement.new(:value => 6, :timestamp => 6)
 
       assert_equal 4.0, subject.summary.eightieth_value.value
-
     end
 
     test "subjects should delegate to summaries" do

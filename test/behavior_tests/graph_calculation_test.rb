@@ -8,6 +8,7 @@ module ActiveMetric
       subject = TestSubject.create :report => report
 
       10.times do |value|
+        #value += 10
         subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
       end
 
@@ -39,8 +40,7 @@ module ActiveMetric
       assert_equal first_stat_name, gvm.series_data.map(&:label).sort.first
     end
 
-
-    test "update series data recalculates last sample" do
+    test "update series data recalculates last sample if on same index" do
       report = Report.create
       subject = TestSubject.create :report => report
 

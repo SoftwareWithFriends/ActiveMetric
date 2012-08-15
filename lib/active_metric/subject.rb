@@ -5,8 +5,6 @@ module ActiveMetric
     include GraphCalculation
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
-    has_many :samples, :class_name => "ActiveMetric::Sample", :as => :samplable, :dependent => :destroy
-
     field :name, :type => String
 
     index({:report_id => -1},{:background => true})
@@ -25,7 +23,7 @@ module ActiveMetric
     end
 
     def summary
-      @summary ||= samples.where(:interval => nil).first ||
+      @summary ||= ActiveMetric::Sample.where(:samplable => to_param, :interval => nil).first ||
           self.class.summary_type.create(:samplable => self,
                                          :interval   => nil)
     end
@@ -42,20 +40,16 @@ module ActiveMetric
       standard_deviators[property] ||= StandardDeviator.new(property)
     end
 
-    def interval_samples
-      samples.reject{|s| s.interval.nil?}.sort_by(&:timestamp)
-    end
-
     def calculate(measurement)
       summary.calculate(measurement)
       returned_sample = current_sample.calculate(measurement)
-      update_subject_calculators(measurement)
       update_current_sample(returned_sample) if is_new_sample?(returned_sample)
+      update_subject_calculators(measurement)
     end
 
     def update_current_sample(returned_sample)
-      @current_sample = returned_sample
       self.complete
+      @current_sample = returned_sample
     end
 
     def is_new_sample?(returned_sample)
@@ -68,30 +62,29 @@ module ActiveMetric
     end
 
     def complete
-      self.summary.complete
-      self.current_sample.complete
-      self.update_graph_model
+      summary.complete
+      current_sample.complete
+      update_graph_model([current_sample])
 
-      self.save!
+      save!
     end
 
     def current_sample
-      @current_sample ||= interval_samples.last ||
-          self.class.sample_type.new(:samplable => self,
-                                     :interval   => self.class.interval_length)
+      @current_sample ||= self.class.sample_type.new(:samplable => self,
+                                                     :interval   => self.class.interval_length)
     end
 
-    def headers_for_table
-      headers = []
-      summary.stats.each do |stat|
-        headers << stat.name
-      end
-    end
-
-    def graphable_stats
-      return {} unless samples.any?
-      samples.first.stat_meta_data
-    end
+    #def headers_for_table
+    #  headers = []
+    #  summary.stats.each do |stat|
+    #    headers << stat.name
+    #  end
+    #end
+    #
+    #def graphable_stats
+    #  return {} unless samples.any?
+    #  samples.first.stat_meta_data
+    #end
 
     def self.sample_type
       nil

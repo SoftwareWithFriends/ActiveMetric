@@ -64,17 +64,21 @@ module ActiveMetric
     end
 
 
-    test "can retrieve partial array" do
-
-      graph_view_model = GraphViewModel.create()
-      graph_view_model.series_data << generate_series_data(4)
-
-      partial_graph = GraphViewModel.where(_id: graph_view_model.id).
-          slice("series_data.data" => [2,MONGO_MAX_LIMIT]).first
-
-      assert_equal [[2,2],[3,3]], partial_graph.series_data.first.data
-    end
-
+    #test "can retrieve partial array" do
+    #  subject = Subject.create
+    #  graph_view_model = subject.graph_view_model
+    #  graph_view_model.series_data << generate_series_data(4)
+    #  graph_view_model.series_data << generate_series_data(4, [[5,5],[6,6],[7,7],[8,8]])
+    #
+    #
+    #  partial_graph = subject.graph_view_model_starting_at(2)
+    #
+    #  assert_equal [[2,2],[3,3]], partial_graph.series_data.first.data
+    #  assert_equal [[7,7],[8,8]], partial_graph.series_data.second.data
+    #
+    #  graph_view_model.series_data[0].push_data([9,9])
+    #  graph_view_model.series_data[1].push_data([10,10])
+    #end
 
     def generate_series_data(x_count, label = "label")
       data = []

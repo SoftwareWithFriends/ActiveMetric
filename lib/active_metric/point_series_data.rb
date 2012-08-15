@@ -9,8 +9,8 @@ module ActiveMetric
       push_all(:data, [value])
     end
 
-    def pop_data
-      pop(:data,1)
+    def pop_data(data_to_pop = 1)
+      pop(:data,data_to_pop)
     end
 
   end
