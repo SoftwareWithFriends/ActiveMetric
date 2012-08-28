@@ -28,5 +28,18 @@ module ActiveMetric
       assert_equal "value", report.some_subjects
     end
 
+    test "can delete a report" do
+      report = Report.create
+      report.subjects.create
+
+      report.delete
+
+      assert_equal 0, ActiveMetric::Report.count
+      assert_equal 0, ActiveMetric::Subject.count
+      assert_equal 0, ActiveMetric::Sample.count
+      assert_equal 0, ActiveMetric::GraphViewModel.count
+
+    end
+
   end
 end

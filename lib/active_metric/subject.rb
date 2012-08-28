@@ -5,6 +5,9 @@ module ActiveMetric
     include GraphCalculation
 
     belongs_to :report, :class_name => "ActiveMetric::Report", :polymorphic => true
+    has_one :samples, :class_name => "ActiveMetric::Sample", :as => "samplable", :dependent => :delete
+    has_one :graph_view_model, :class_name => "ActiveMetric::GraphViewModel", :dependent => :delete
+
     field :name, :type => String
 
     index({:report_id => -1},{:background => true})
@@ -73,18 +76,6 @@ module ActiveMetric
       @current_sample ||= self.class.sample_type.new(:samplable => self,
                                                      :interval   => self.class.interval_length)
     end
-
-    #def headers_for_table
-    #  headers = []
-    #  summary.stats.each do |stat|
-    #    headers << stat.name
-    #  end
-    #end
-    #
-    #def graphable_stats
-    #  return {} unless samples.any?
-    #  samples.first.stat_meta_data
-    #end
 
     def self.sample_type
       nil
