@@ -1,7 +1,7 @@
 module ActiveMetric
   module GraphCalculation
     #REQUIRES SUMMARY AND INTERVAL SAMPLES AND SERIES DATA
-
+    MONGO_MAX_LIMIT = (1 << 31) - 1
     def self.included(klass)
       klass.has_one :graph_view_model,
                     :class_name => "ActiveMetric::GraphViewModel", :autosave => true
@@ -17,6 +17,10 @@ module ActiveMetric
 
     def has_graph_data
       true
+    end
+
+    def graph_view_model_starting_at(index)
+      GraphViewModel.where(subject_id: id).slice("series_data.data" => [index,MONGO_MAX_LIMIT]).first
     end
 
     def update_graph_model(remaining_interval_samples)

@@ -22,6 +22,5 @@ module ActiveMetric
       series
     end
 
-
   end
 end
