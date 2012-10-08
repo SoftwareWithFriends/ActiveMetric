@@ -3,7 +3,7 @@ module ActiveMetric
   class Sample
     include Mongoid::Document
 
-    belongs_to :samplable, :polymorphic => true
+    belongs_to :samplable, :polymorphic => true, index: true
 
     embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable
 
@@ -55,7 +55,7 @@ module ActiveMetric
     end
 
     def duration_in_seconds
-      return end_time - start_time if end_time && start_time
+      return end_time  - start_time if end_time && start_time
       return 0
     end
 
