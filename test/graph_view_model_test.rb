@@ -71,7 +71,7 @@ module ActiveMetric
       graph_view_model.series_data << generate_series_data(4,"label 2")
 
       partial_graph = subject.graph_view_model_starting_at(2)
-      p partial_graph.series_data.first
+
       assert_equal [[2,2],[3,3]], partial_graph.series_data.first.data
       assert_equal [[2,2],[3,3]], partial_graph.series_data.second.data
 

@@ -41,5 +41,33 @@ module ActiveMetric
 
     end
 
+    test "can set display name" do
+      class TestReport < Report
+
+        def set_display_name
+          "Overriden Display Name"
+        end
+      end
+
+      report = TestReport.create
+
+      assert_equal "Overriden Display Name", report.display_name
+    end
+
+    test "can set display name through attribute" do
+      class TestReport < Report
+
+        def set_display_name
+          "TestReport Display Name"
+        end
+      end
+
+      report = TestReport.create display_name: "Overriden Display Name"
+
+      assert_equal "Overriden Display Name", report.display_name
+    end
+
+
+
   end
 end

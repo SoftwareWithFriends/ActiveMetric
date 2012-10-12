@@ -2,10 +2,22 @@ module ActiveMetric
   class Report
     include Mongoid::Document
 
+    before_save :save_display_name
+
+    field :display_name
+
     has_many :subjects, :class_name => "ActiveMetric::Subject", :dependent => :destroy
 
     def name
       "report"
+    end
+
+    def save_display_name
+      self.display_name ||= set_display_name
+    end
+
+    def set_display_name
+      "Report"
     end
 
     def series
