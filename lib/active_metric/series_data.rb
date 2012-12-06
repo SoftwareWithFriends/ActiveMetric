@@ -17,7 +17,7 @@ module ActiveMetric
       series.x_axis        = options[:x_axis]        if options[:x_axis]
       series.y_axis        = options[:axis]          if options[:axis]
       series.approximation = options[:approximation] if options[:approximation]
-      series.visible       = options[:visible]       if options[:visible]
+      series.visible       = options[:visible]       unless options[:visible].nil?
 
       series
     end
