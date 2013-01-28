@@ -1,5 +1,6 @@
 module ActiveMetric
-  class CannotInstantiateBaseStat < Exception; end
+  class CannotInstantiateBaseStat < Exception;
+  end
 
   class Stat
     include Mongoid::Document
@@ -9,7 +10,7 @@ module ActiveMetric
     field :property, :type => String
     field :axis, :type => Integer, :default => 0
 
-    def initialize(property,*args)
+    def initialize(property, *args)
       super(*args)
       self.property = property
     end
@@ -43,16 +44,22 @@ module ActiveMetric
         return ActiveMetric.const_get(class_name)
       end
       klass = Class.new(Custom) do
-        define_method(:calculate,calculate_block)
+        define_method(:calculate, calculate_block)
       end
       klass.send(:field, :value, :type => value_type, :default => default)
-      ActiveMetric.const_set(class_name,klass)
+      ActiveMetric.const_set(class_name, klass)
       return klass
     end
 
     def subject
       self.calculable.samplable
     end
+
+    def property_from(measurement)
+      return nil unless measurement
+      measurement.send(self.property)
+    end
+
   end
 
   class Custom < Stat

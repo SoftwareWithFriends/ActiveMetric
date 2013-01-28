@@ -32,8 +32,8 @@ module ActiveMetric
     field :last
 
     def calculate(measurement)
-      self.last  = property_from_measurement(measurement)
-      self.first ||= (property_from_measurement(calculable.seed_measurement) || self.last)
+      self.last  = property_from(measurement)
+      self.first ||= (property_from(calculable.seed_measurement) || self.last)
       duration_from_seed_measurement = calculable.duration_from_previous_sample_in_seconds
       self.value = calculate_derivative(first, last, duration_from_seed_measurement)
     end
@@ -46,26 +46,35 @@ module ActiveMetric
       end
     end
 
-    def property_from_measurement(measurement)
-      return nil unless measurement
-      measurement.send(self.property)
-    end
-
   end
 
   class LastDerivative < Derivative
     field :previous_timestamp
 
     def calculate(measurement)
-      self.first = (self.last || property_from_measurement(calculable.seed_measurement) || property_from_measurement(measurement))
+      self.first = (self.last || property_from(calculable.seed_measurement) || property_from(measurement))
 
       duration = measurement.timestamp - (self.previous_timestamp || measurement.timestamp)
       self.previous_timestamp = measurement.timestamp
 
-      self.last  = property_from_measurement(measurement)
+      self.last  = property_from(measurement)
       self.value = calculate_derivative(first, last, duration)
     end
 
+  end
+
+  class Delta < Stat
+    field :first
+
+    def calculate(measurement)
+
+      seed_value = property_from(calculable.seed_measurement)
+      current_value = property_from(measurement)
+
+      self.first ||= (seed_value || current_value)
+
+      self.value = current_value - first
+    end
   end
 
   class Sum < Stat
