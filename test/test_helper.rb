@@ -30,6 +30,7 @@ module ActiveMetric
   class TestSample < Sample
     stat :value
     stat :value, [:standard_deviation], axis: 1
+    stat :value, [:delta], axis: 1
     custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
     end

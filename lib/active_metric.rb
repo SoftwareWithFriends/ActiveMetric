@@ -19,6 +19,10 @@ require 'active_metric/axis'
 require 'active_metric/stat_definition'
 
 
+Dir.glob("#{File.dirname(__FILE__)}/active_metric/config/initializers/*").each do |initializer|
+  require initializer
+end
+
 
 module ActiveMetric
 end
