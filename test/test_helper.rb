@@ -14,8 +14,8 @@ require 'active_support/test_case'
 # Load support files
 #Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-require 'minitest/reporters'
-MiniTest::Reporters.use!
+#require 'minitest/reporters'
+#MiniTest::Reporters.use!
 
 module ActiveMetric
   INTERVAL_LENGTH = 5

@@ -5,7 +5,7 @@ module ActiveMetric
 
     belongs_to :samplable, :polymorphic => true, index: true
 
-    embeds_many :stats, :class_name => "ActiveMetric::Stat", :as => :calculable
+    embeds_many :stats, :as => :calculable
 
     attr_accessor :seed_measurement, :latest_measurement
 

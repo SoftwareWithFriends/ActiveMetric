@@ -3,6 +3,9 @@ require_relative "test_helper"
 module ActiveMetric
   class SampleTest < ActiveSupport::TestCase
 
+
+
+
     test "should have the correct stats by name" do
       subject = TestSubject.new
 

@@ -46,6 +46,7 @@ module ActiveMetric
       klass = Class.new(Custom) do
         define_method(:calculate, calculate_block)
       end
+      klass.send(:field, :_type, :default => "ActiveMetric::#{class_name}")
       klass.send(:field, :value, :type => value_type, :default => default)
       ActiveMetric.const_set(class_name, klass)
       return klass
