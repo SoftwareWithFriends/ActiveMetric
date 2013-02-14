@@ -72,7 +72,7 @@ module ActiveMetric
     end
 
     def debug(message)
-      Rails.logger.error "DEBUGAM #{self.name} #{message}"
+      ActiveMetric.logger.error "DEBUGAM #{self.name} #{message}"
     end
 
   end

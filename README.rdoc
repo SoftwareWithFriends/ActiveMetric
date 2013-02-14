@@ -1,3 +1,5 @@
 = ActiveMetric
 
-Bananas. If you read this, get someone to write a better readme.
+ActiveMetric is a library to generate reports.
+
+By defining a report, subjects, samples and view models you can pass measurements into your subjects and generate graph data.

@@ -1,8 +1,30 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class ActiveMetricTest < ActiveSupport::TestCase
-  test "truth" do
-    assert_kind_of Module, ActiveMetric
+
+  setup do
+    ActiveMetric.logger = nil
+  end
+
+  teardown do
+    ActiveMetric.logger = nil
+  end
+
+  test "can use logger" do
+
+    Logger.any_instance.expects(:info).with("Test")
+
+    ActiveMetric.logger.info "Test"
+  end
+
+  test "can set a logger" do
+    mock_logger = mock
+
+    ActiveMetric.logger = mock_logger
+
+    mock_logger.expects(:info).with("Test")
+
+    ActiveMetric.logger.info("Test")
   end
 
 end

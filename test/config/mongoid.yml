@@ -1,0 +1,13 @@
+test:
+  sessions:
+    default:
+      database: active_metric_test
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+        safe: true
+        identity_map_enabled: true
+        include_type_for_serialization: true
+        include_root_in_json: true
+        preload_models: true

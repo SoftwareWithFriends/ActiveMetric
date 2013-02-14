@@ -1,4 +1,5 @@
 require 'mongoid'
+require 'active_support/test_case'
 
 require 'active_metric/behavior/graph_calculation'
 require 'active_metric/calculators/standard_deviator'
@@ -18,11 +19,19 @@ require 'active_metric/point_series_data'
 require 'active_metric/axis'
 require 'active_metric/stat_definition'
 
+module ActiveMetric
+  CONFIG_PATH = File.join(File.dirname(__FILE__),"active_metric/config")
+
+  def self.logger
+    @logger ||= Logger.new(STDOUT)
+  end
+
+  def self.logger=(new_logger)
+    @logger = new_logger
+  end
+
+end
 
 Dir.glob("#{File.dirname(__FILE__)}/active_metric/config/initializers/*").each do |initializer|
   require initializer
-end
-
-
-module ActiveMetric
 end

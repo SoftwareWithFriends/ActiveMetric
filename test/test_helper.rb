@@ -1,21 +1,21 @@
-# Configure Rails Environment
-ENV["RAILS_ENV"] = "test"
+# Configure Active Metric Environment
+ENV["AM_ENV"] = "test"
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
-require "rails/test_help"
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-Rails.backtrace_cleaner.remove_silencers!
+require 'active_metric'
+
+ENV["MONGOID_ENV"] = ENV["AM_ENV"]
+Mongoid.load!(File.join(File.dirname(__FILE__), "config/mongoid.yml"))
+
+require 'test/unit'
+require 'active_support/test_case'
 
 # Load support files
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+#Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 require 'minitest/reporters'
-MiniTest::Unit.runner = MiniTest::SuiteRunner.new
-if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMineReporter.new
-else
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::ProgressReporter.new
-end
+MiniTest::Reporters.use!
 
 module ActiveMetric
   INTERVAL_LENGTH = 5
