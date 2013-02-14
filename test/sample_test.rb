@@ -16,8 +16,8 @@ module ActiveMetric
       assert_kind_of NinetyEighth, sample.ninety_eighth_value
       assert_kind_of StandardDeviation, sample.standard_deviation_value
       assert_kind_of Delta, sample.delta_value
-      assert_kind_of Stat, sample.test_count
-      assert_kind_of Stat, sample.test_response_codes
+      assert_kind_of TestCount, sample.test_count
+      assert_kind_of TestResponseCodes, sample.test_response_codes
     end
 
     test "should have sames stats when reloaded" do
