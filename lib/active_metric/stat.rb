@@ -40,7 +40,7 @@ module ActiveMetric
     def self.create_custom_stat(name_of_stat, value_type, default, calculate_block)
       class_name = name_of_stat.to_s.camelcase
       if ActiveMetric.const_defined?(class_name)
-        ActiveMetric.logger.warn "\n\n#{class_name} is already defined. It won't be defined again.\n\n"
+        ActiveMetric.logger.warn "#{class_name} is already defined. It won't be defined again."
         return ActiveMetric.const_get(class_name)
       end
       klass = Class.new(Custom) do
