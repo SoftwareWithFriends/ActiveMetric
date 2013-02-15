@@ -19,6 +19,6 @@ class MongoidTest < ActiveSupport::TestCase
 
     new_object = NewKlass.create
   #  assert_equal "MongoidTest::NewKlass", new_object._type
-    assert_equal nil, new_object._type
+    assert_equal nil, new_object._type, "Mongoid correctly sets _type on Anonymous Classes now. Go remove the hack in stat: create_custom_stat WRT _type  "
   end
 end
