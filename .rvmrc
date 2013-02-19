@@ -1,1 +1,1 @@
-rvm 1.9.3-p0@am
+rvm --create 1.9.3-p0@am
