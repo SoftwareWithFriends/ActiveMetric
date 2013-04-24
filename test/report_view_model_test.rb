@@ -78,7 +78,7 @@ module ActiveMetric
                                 field3: 3)
 
       subject.stubs(:to_param).returns("1")
-      subject.stubs(:has_series).returns(true)
+      subject.stubs(:has_graph_data).returns(true)
       [subject]
     end
 

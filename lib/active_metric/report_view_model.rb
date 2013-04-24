@@ -83,7 +83,7 @@ module ActiveMetric
       def initialize(row_data, columns)
         @cells = []
         @row_id = row_data.to_param
-        @has_series = row_data.has_series
+        @has_series = row_data.has_graph_data
         columns.each do |col|
           value = row_data.send(col.field)
           cells << CellViewModel.new(value, col.format_options)

@@ -26,7 +26,7 @@ module ActiveMetric
     end
 
     def summary
-      @summary ||= ActiveMetric::Sample.where(:samplable => to_param, :interval => nil).first ||
+      @summary ||= ActiveMetric::Sample.where(:samplable_id => to_param, :interval => nil).first ||
           self.class.summary_type.create(:samplable => self,
                                          :interval   => nil)
     end
