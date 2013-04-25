@@ -9,13 +9,13 @@ module ActiveMetric
 
     attr_accessor :seed_measurement, :latest_measurement
 
-    field :interval,          :type => Integer, :default => nil
-    field :start_time,        :type => Integer
-    field :end_time,          :type => Integer
-    field :timestamp,         :type => Integer
+    field :interval, :type => Integer, :default => nil
+    field :start_time, :type => Integer
+    field :end_time, :type => Integer
+    field :timestamp, :type => Integer
     field :measurement_count, :type => Integer, :default => 0
-    field :sum,               :type => Integer, :default => 0
-    field :sample_index,      :type => Integer
+    field :sum, :type => Integer, :default => 0
+    field :sample_index, :type => Integer
 
     def initialize(attr = nil, options = nil, measurement = nil, index = 0)
       @seed_measurement = measurement
@@ -34,16 +34,9 @@ module ActiveMetric
 
     def calculate(measurement)
       set_start_time(measurement) unless start_time
-
-      if within_interval?(measurement)
-        @latest_measurement = measurement
-        update_time(measurement)
-        update_stats(measurement)
-        return self
-      end
-
-      complete
-      new_sample.calculate(measurement)
+      @latest_measurement = measurement
+      update_time(measurement)
+      update_stats(measurement)
     end
 
     def complete
@@ -51,11 +44,10 @@ module ActiveMetric
       self.stats.each do |statistic|
         statistic.complete
       end
-      self.save!
     end
 
     def duration_in_seconds
-      return end_time  - start_time if end_time && start_time
+      return end_time - start_time if end_time && start_time
       return 0
     end
 
@@ -73,7 +65,7 @@ module ActiveMetric
     end
 
     def is_summary?
-      ! interval
+      !interval
     end
 
     private
@@ -99,8 +91,8 @@ module ActiveMetric
     def update_time(measurement)
       self.sum += measurement.timestamp
       self.measurement_count += 1
-      self.end_time           = measurement.timestamp
-      self.timestamp          = (self.sum / self.measurement_count).to_i
+      self.end_time = measurement.timestamp
+      self.timestamp = (self.sum / self.measurement_count).to_i
     end
 
     def update_stats(measurement)
@@ -110,7 +102,7 @@ module ActiveMetric
     end
 
     def new_sample
-      self.class.new({:samplable => self.samplable, :interval => interval},{},@latest_measurement, sample_index + 1)
+      self.class.new({:samplable => self.samplable, :interval => interval}, {}, @latest_measurement, sample_index + 1)
     end
 
     def self.stats_defined
@@ -133,11 +125,11 @@ module ActiveMetric
       end
     end
 
-    def self.custom_stat(name_of_stat, value_type,default = nil, axis = -1, &block)
+    def self.custom_stat(name_of_stat, value_type, default = nil, axis = -1, &block)
       custom_stat_klass = Stat.create_custom_stat(name_of_stat,
-                              value_type,
-                              default,
-                              block)
+                                                  value_type,
+                                                  default,
+                                                  block)
       access_name = custom_stat_klass.access_name
       options = {axis: axis}
       self.stats_defined << StatDefinition.new(name_of_stat, custom_stat_klass, access_name, options)

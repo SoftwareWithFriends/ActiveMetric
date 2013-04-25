@@ -44,15 +44,22 @@ module ActiveMetric
     end
 
     def calculate(measurement)
-      summary.calculate(measurement)
-      returned_sample = current_sample.calculate(measurement)
-      update_current_sample(returned_sample) if is_new_sample?(returned_sample)
+      handle_sample_rollover(measurement)
+
       update_subject_calculators(measurement)
+      summary.calculate(measurement)
+      current_sample.calculate(measurement)
     end
 
-    def update_current_sample(returned_sample)
-      self.complete
-      @current_sample = returned_sample
+    def handle_sample_rollover(measurement)
+      if need_new_sample?(measurement)
+        complete
+        @current_sample = current_sample.new_sample
+      end
+    end
+
+    def need_new_sample?(measurement)
+      current_sample.within_interval? measurement
     end
 
     def is_new_sample?(returned_sample)
@@ -66,8 +73,9 @@ module ActiveMetric
 
     def complete
       summary.complete
+      summary.save!
       current_sample.complete
-      update_graph_model([current_sample])
+      update_graph_model(current_sample)
 
       save!
     end

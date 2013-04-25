@@ -2,6 +2,7 @@ module ActiveMetric
   module GraphCalculation
     #REQUIRES SUMMARY AND INTERVAL SAMPLES AND SERIES DATA
     MONGO_MAX_LIMIT = (1 << 31) - 1
+
     def self.included(klass)
       klass.has_one :graph_view_model,
                     :class_name => "ActiveMetric::GraphViewModel", :autosave => true
@@ -20,28 +21,26 @@ module ActiveMetric
     end
 
     def graph_view_model_starting_at(index)
-      GraphViewModel.where(subject_id: id).slice("series_data.data" => [index,MONGO_MAX_LIMIT]).first
+      GraphViewModel.where(subject_id: id).slice("series_data.data" => [index, MONGO_MAX_LIMIT]).first
     end
 
-    def update_graph_model(remaining_interval_samples)
-      pop_necessary_samples(remaining_interval_samples)
-      remaining_interval_samples.each do |sample|
-        sample.stats.each do|stat|
-          series = graph_view_model.series_for(stat.access_name.to_s)
-          series.push_data([time(sample.timestamp), stat.value]) if series && sample.timestamp && start_time
-        end
+    def update_graph_model(interval_sample)
+      pop_necessary_samples(interval_sample)
+      interval_sample.stats.each do |stat|
+        series = graph_view_model.series_for(stat.access_name.to_s)
+        series.push_data([time(interval_sample.timestamp), stat.value]) if series && interval_sample.timestamp && start_time
       end
 
       self.save!
     end
 
-    def pop_necessary_samples(remaining_interval_samples)
-      data_to_pop = calculate_data_to_pop(remaining_interval_samples)
+    def pop_necessary_samples(interval_sample)
+      data_to_pop = calculate_data_to_pop(interval_sample)
       pop_from_series(data_to_pop) if data_to_pop > 0
     end
 
-    def calculate_data_to_pop(remaining_interval_samples)
-      incoming_index = remaining_interval_samples.first.sample_index
+    def calculate_data_to_pop(interval_sample)
+      incoming_index = interval_sample.sample_index
       next_index = graph_view_model.size
       next_index - incoming_index
     end
