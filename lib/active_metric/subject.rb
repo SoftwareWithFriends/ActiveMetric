@@ -10,7 +10,7 @@ module ActiveMetric
 
     field :name, :type => String
 
-    index({:report_id => -1},{:background => true})
+    index({:report_id => -1}, {:background => true})
 
     def method_missing(method, *args)
       self.class.send(:define_method, method.to_sym) { value_from_summary(method) }
@@ -26,9 +26,16 @@ module ActiveMetric
     end
 
     def summary
-      @summary ||= ActiveMetric::Sample.where(:samplable_id => to_param, :interval => nil).first ||
-          self.class.summary_type.create(:samplable => self,
-                                         :interval   => nil)
+      if @summary
+        return @summary
+      end
+
+      if samples
+        @summary = samples
+        return samples
+      end
+
+      @summary = self.samples = self.class.summary_type.find_or_create_by(:samplable => self)
     end
 
     def reservoir
@@ -82,7 +89,7 @@ module ActiveMetric
 
     def current_sample
       @current_sample ||= self.class.sample_type.new(:samplable => self,
-                                                     :interval   => self.class.interval_length)
+                                                     :interval => self.class.interval_length)
     end
 
     def self.sample_type
@@ -108,8 +115,6 @@ module ActiveMetric
         end
       |
     end
-
-
 
   end
 end
