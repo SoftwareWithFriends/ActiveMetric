@@ -36,7 +36,7 @@ module ActiveMetric
       title.to_sym
     end
 
-    #TODO FIGURE OUT A WAY TO MAKE CUSTOM CLASSES NOT NEED TO BE INSIDE OF ACTIVE METRIC (I.E. LET THEM BE NAMESPACED)
+    #TODO Make custom classes namespaced to where they are being defined
     def self.create_custom_stat(name_of_stat, value_type, default, calculate_block)
       class_name = name_of_stat.to_s.camelcase
       if ActiveMetric.const_defined?(class_name)
@@ -46,7 +46,6 @@ module ActiveMetric
       klass = Class.new(Custom) do
         define_method(:calculate, calculate_block)
       end
-      klass.send(:field, :_type, :default => "ActiveMetric::#{class_name}")
       klass.send(:field, :value, :type => value_type, :default => default)
       ActiveMetric.const_set(class_name, klass)
       return klass

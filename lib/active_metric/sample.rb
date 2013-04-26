@@ -33,7 +33,7 @@ module ActiveMetric
     end
 
     def calculate(measurement)
-      set_start_time(measurement) unless start_time
+      set_start_time(measurement)
       @latest_measurement = measurement
       update_time(measurement)
       update_stats(measurement)
@@ -68,11 +68,22 @@ module ActiveMetric
       !interval
     end
 
+    def within_interval?(measurement)
+      return true if is_summary?
+      return true unless self.start_time
+      (measurement.timestamp - self.start_time) < self.interval
+    end
+
+    def new_sample
+      self.class.new({:samplable => self.samplable, :interval => interval}, {}, @latest_measurement, sample_index + 1)
+    end
+
     private
 
     def set_start_time(measurement)
-      self.start_time = measurement.timestamp
-      self.save! if is_summary?
+      unless start_time
+        self.start_time = measurement.timestamp
+      end
     end
 
     def generate_stats_by_name
@@ -81,11 +92,6 @@ module ActiveMetric
         stat_name_hash[stat.access_name] = stat
       end
       stat_name_hash
-    end
-
-    def within_interval?(measurement)
-      return true unless self.interval
-      (measurement.timestamp - self.start_time) < self.interval
     end
 
     def update_time(measurement)
@@ -99,10 +105,6 @@ module ActiveMetric
       self.stats.each do |stat|
         stat.calculate(measurement)
       end
-    end
-
-    def new_sample
-      self.class.new({:samplable => self.samplable, :interval => interval}, {}, @latest_measurement, sample_index + 1)
     end
 
     def self.stats_defined

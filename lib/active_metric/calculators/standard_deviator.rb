@@ -11,6 +11,7 @@ module ActiveMetric
     end
 
     def calculate(measurement)
+      @standard_deviation = nil
       @count +=1
       value = measurement.send(property)
       @sum += value
@@ -18,11 +19,14 @@ module ActiveMetric
     end
 
     def standard_deviation
-      diff = mean_squares - (mean * mean)
-      return 0 if diff.nan?
-      @standard_deviation = Math.sqrt(diff)
+      @standard_deviation ||= calculate_standard_deviation
     end
-  
+
+    def calculate_standard_deviation
+      diff = mean_squares - (mean * mean)
+      Math.sqrt(diff)
+    end
+
     def mean
       sum.to_f / count
     end

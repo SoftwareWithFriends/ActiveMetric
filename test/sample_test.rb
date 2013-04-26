@@ -3,14 +3,9 @@ require_relative "test_helper"
 module ActiveMetric
   class SampleTest < ActiveSupport::TestCase
 
-
-
-
     test "should have the correct stats by name" do
       subject = TestSubject.new
-
-      sample = TestSample.create(:samplable => subject)
-      sample = TestSample.find sample.id
+      sample = TestSample.new(:samplable => subject)
       assert_equal 9, sample.stats.size
       assert_kind_of Min, sample.min_value
       assert_kind_of Mean, sample.mean_value
@@ -23,38 +18,6 @@ module ActiveMetric
       assert_kind_of TestResponseCodes, sample.test_response_codes
     end
 
-    test "should have sames stats when reloaded" do
-      subject = TestSubject.new
-
-      sample = TestSample.create :samplable => subject
-      sample.calculate TestMeasurement.create(:value => 10, :timestamp => 1234)
-      sample.save!
-      assert_equal 10, sample.min_value.value
-    end
-
-    test "sample without interval should return self always" do
-      subject = TestSubject.new
-      sample = TestSample.new :samplable => subject
-      sample.calculate TestMeasurement.create(:value => 10, :timestamp => 1234)
-      new_sample = sample.calculate TestMeasurement.create(:value => 10, :timestamp => 91234)
-
-      assert_equal sample,new_sample
-    end
-
-    test "calculate calls complete and returns new sample if measurement outside of sample size" do
-      subject = TestSubject.new
-
-      sample = TestSample.new(:interval => 6, :samplable => subject)
-      5.times do |time|
-        sample.calculate TestMeasurement.create :value => 1, :timestamp => time
-      end
-
-      sample.expects(:complete)
-      new_sample = sample.calculate TestMeasurement.create :value => 1, :timestamp => 10
-
-      assert_not_equal sample, new_sample
-    end
-
     test "samples spawned from samples contain seed measurement" do
       subject = TestSubject.new
 
@@ -63,46 +26,35 @@ module ActiveMetric
       sample = TestSample.new(:interval => 6, :samplable => subject)
 
       num_measurements.times do |time|
-        sample.calculate TestMeasurement.create :value => 1, :timestamp => time
+        sample.calculate TestMeasurement.new :value => 1, :timestamp => time
       end
 
-      sample.expects(:complete)
-      new_sample = sample.calculate TestMeasurement.create :value => 1, :timestamp => 10
+      new_sample = sample.new_sample
 
       assert_not_equal sample, new_sample
       assert_equal 4, new_sample.seed_measurement.timestamp
       assert_equal sample.latest_measurement, new_sample.seed_measurement
     end
 
-    test "should not save if sample has no measurements" do
-      subject = TestSubject.new
-      assert_equal 0, TestSample.count
-      sample = TestSample.new(:interval => 6, :samplable => subject)
-      assert_equal 0, TestSample.count
-      assert_equal false, sample.complete
-      assert_equal 0, TestSample.count
-    end
 
     test "should have correct timestamp" do
-      measurements = [TestMeasurement.create(:value => 10, :timestamp => 1),
-                      TestMeasurement.create(:value => 12, :timestamp => 2),
-                      TestMeasurement.create(:value => 11, :timestamp => 9)]
+      measurements = [TestMeasurement.new(:value => 10, :timestamp => 1),
+                      TestMeasurement.new(:value => 12, :timestamp => 2),
+                      TestMeasurement.new(:value => 11, :timestamp => 9)]
 
       subject = TestSubject.create
-      sample = TestSample.create(:samplable => subject)
+      sample = TestSample.new(:samplable => subject)
       measurements.each do |measurement|
         sample.calculate(measurement)
       end
-      sample.save!
-      sample = TestSample.find sample.id
       assert_equal (4), sample.timestamp
     end
 
     test "should call calculate on all stats" do
       subject = TestSubject.create
-      sample = TestSample.create(:samplable => subject)
+      sample = TestSample.new(:samplable => subject)
       5.times do |value|
-        measurement = TestMeasurement.create :value => value, :timestamp => 1
+        measurement = TestMeasurement.new :value => value, :timestamp => 1
         sample.stats.each do |stat|
           stat.expects(:calculate).with(measurement)
         end
@@ -133,16 +85,13 @@ module ActiveMetric
       assert summary.is_summary?
     end
 
-    test "summary only should save itself with start time after first measurement" do
+    test "summary only should set start time after first measurement" do
       subject = TestSubject.create
       summary = subject.summary
       assert_nil summary.start_time
 
 
-      summary.calculate(TestMeasurement.create :value => 1, :timestamp => 1)
-      assert_equal 1, summary.start_time
-
-      summary.reload
+      summary.calculate(TestMeasurement.new :value => 1, :timestamp => 1)
       assert_equal 1, summary.start_time
     end
 

@@ -8,7 +8,7 @@ require 'active_metric'
 ENV["MONGOID_ENV"] = ENV["AM_ENV"]
 Mongoid.load!(File.join(File.dirname(__FILE__), "config/mongoid.yml"))
 
-require 'test/unit'
+require 'test-unit'
 require 'active_support/test_case'
 
 # Load support files

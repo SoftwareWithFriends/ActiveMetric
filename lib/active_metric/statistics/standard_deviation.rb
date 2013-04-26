@@ -5,16 +5,16 @@ module ActiveMetric
       super(*args)
     end
     def calculate(measurement)
-      set_standard_deviation unless @have_set_standard_deviation
+      set_standard_deviator unless @have_set_standard_deviator
     end
     def complete
-      set_standard_deviation unless @have_set_standard_deviation
+      set_standard_deviator unless @have_set_standard_deviator
       self.value = subject.standard_deviators[self.property].standard_deviation
       super
     end
 
-    def set_standard_deviation
-      @have_set_standard_deviation = true
+    def set_standard_deviator
+      @have_set_standard_deviator = true
       subject.ensure_standard_deviator_for(self.property)
     end
 

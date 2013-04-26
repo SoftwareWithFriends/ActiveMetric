@@ -118,6 +118,26 @@ module ActiveMetric
       assert_equal 5, subject.duration_in_seconds
     end
 
+    test "no measurements or interval samples should be in the database" do
+      report = Report.create
+      subject = TestSubject.create :report => report
+      subject2 = TestSubject.create :report => report
+      11.times do |value|
+        subject.calculate TestMeasurement.new(:value => 100 - value, :timestamp => value)
+      end
+      10.times do |value|
+        subject2.calculate TestMeasurement.new(:value => 200 - value, :timestamp => value)
+      end
+      subject2.complete
+      subject.complete
+      assert_equal 90, subject.min_value
+      assert_equal 191, subject2.min_value
+
+      assert_equal 0, ActiveMetric::Measurement.count
+      assert_equal 0, ActiveMetric::Sample.where(:interval.ne => nil).count
+      assert_equal 2, ActiveMetric::Sample.where(:interval => nil).count
+    end
+
     private
 
     def assert_within_threshold(threshold, actual, estimated)
