@@ -26,16 +26,7 @@ module ActiveMetric
     end
 
     def summary
-      if @summary
-        return @summary
-      end
-
-      if samples
-        @summary = samples
-        return samples
-      end
-
-      @summary = self.samples = self.class.summary_type.find_or_create_by(:samplable => self)
+      self.samples ||= self.class.summary_type.find_or_create_by(:samplable => self)
     end
 
     def reservoir
