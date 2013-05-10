@@ -21,7 +21,7 @@ module ActiveMetric
   INTERVAL_LENGTH = 5
 
   class TestMeasurement < Measurement
-    field :value, :type => Integer, :default => 0
+    field :value, :default => 0
   end
 
   class TestStat < Stat
@@ -31,9 +31,13 @@ module ActiveMetric
     stat :value
     stat :value, [:standard_deviation], axis: 1
     stat :value, [:delta], axis: 1
+    stat :value, [:speed], axis: 1
+    stat :value, [:bucket], axis: 2
+
     custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
     end
+
     custom_stat :test_response_codes, Hash, {} do |measurement|
       self.value[measurement.value.to_s] ||= 0
       self.value[measurement.value.to_s] += 1
@@ -41,6 +45,7 @@ module ActiveMetric
 
     axis index: 0, label: "first axis"
     axis index: 1, label: "second axis"
+    axis index: 2, label: "third axis"
   end
 
   class TestSubject < Subject

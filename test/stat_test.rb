@@ -103,11 +103,24 @@ module ActiveMetric
       assert_equal slope_of_two, stat.value
     end
 
+    test "can calculate speed" do
+      stat = Speed.new(:value, :calculable => @sample)
+
+      @sample.stubs(:seed_measurement).returns(test_seed_measurement)
+      @sample.expects(:duration_from_previous_sample_in_seconds).times(4).returns(1, 2, 3, 4)
+
+      test_stat(stat, [2, 3, 4, 5])
+
+      speed_of_one_per_second = 1.0
+      assert_equal speed_of_one_per_second, stat.value
+
+    end
+
     test "can calculate delta without seed measurement" do
       stat = Delta.new(:value, :calculable => @sample)
       @sample.stubs(:seed_measurement).returns(nil)
 
-      test_stat(stat, [1,5,10])
+      test_stat(stat, [1, 5, 10])
       assert_equal 9, stat.value
     end
 
@@ -115,7 +128,7 @@ module ActiveMetric
       stat = Delta.new(:value, :calculable => @sample)
       @sample.stubs(:seed_measurement).returns(test_seed_measurement)
 
-      test_stat(stat, [5,10])
+      test_stat(stat, [5, 10])
       assert_equal 9, stat.value
     end
 
@@ -149,6 +162,20 @@ module ActiveMetric
       values = [true, true, false]
       test_stat(stat, values)
       assert_equal 1, stat.value
+    end
+
+    test "can bucket values" do
+      stat = Bucket.new(:value, :calculabe => @sample)
+      values = [200, 404, 500, 502, 200, 500, 504.2]
+      test_stat(stat, values)
+      expected_bucket = {
+          "200" => 2,
+          "404" => 1,
+          "500" => 2,
+          "502" => 1,
+          "504_2" => 1
+      }
+      assert_equal expected_bucket, stat.value
     end
 
 

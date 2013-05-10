@@ -2,6 +2,7 @@ require 'mongoid'
 require 'active_support/test_case'
 
 require 'active_metric/behavior/graph_calculation'
+require 'active_metric/behavior/calculates_derivative'
 require 'active_metric/calculators/standard_deviator'
 
 require 'active_metric/subject'

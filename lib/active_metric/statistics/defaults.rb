@@ -1,6 +1,7 @@
 module ActiveMetric
   class Min < Stat
     field :value, :type => Float, :default => (1 << 62)
+
     def calculate(measurement)
       self.value = [self.value, measurement.send(self.property)].min
     end
@@ -17,8 +18,8 @@ module ActiveMetric
     field :count, :type => Integer, :default => 0
 
     def calculate(measurement)
-      self.count +=  1
-      self.sum   +=  measurement.send(self.property)
+      self.count += 1
+      self.sum += measurement.send(self.property)
     end
 
     def complete
@@ -28,24 +29,38 @@ module ActiveMetric
   end
 
   class Derivative < Stat
+    include CalculatesDerivative
     field :first
     field :last
 
     def calculate(measurement)
-      self.last  = property_from(measurement)
+      self.last = property_from(measurement)
       self.first ||= (property_from(calculable.seed_measurement) || self.last)
-      duration_from_seed_measurement = calculable.duration_from_previous_sample_in_seconds
-      self.value = calculate_derivative(first, last, duration_from_seed_measurement)
+      self.value = derivative_from_seed_measurement(first,last)
     end
 
-    def calculate_derivative(first, last,duration)
-      if duration > 0
-        (last - first).to_f / duration
-      else
-        0
-      end
-    end
+  end
 
+  class Speed < Stat
+    include CalculatesDerivative
+    field :count, :type => Integer, :default => 0
+
+    def calculate(measurement)
+      self.count +=1
+      self.value = derivative_from_seed_measurement(0,count)
+    end
+  end
+
+  class Bucket < Stat
+    field :value, :type => Hash, :default => {}
+
+    MONGO_UNSAFE = /\.|\$/
+
+    def calculate(measurement)
+      key = property_from(measurement).to_s.gsub(MONGO_UNSAFE, "_")
+      self.value[key] ||= 0
+      self.value[key] += 1
+    end
   end
 
   class LastDerivative < Derivative
@@ -57,7 +72,7 @@ module ActiveMetric
       duration = measurement.timestamp - (self.previous_timestamp || measurement.timestamp)
       self.previous_timestamp = measurement.timestamp
 
-      self.last  = property_from(measurement)
+      self.last = property_from(measurement)
       self.value = calculate_derivative(first, last, duration)
     end
 
@@ -79,15 +94,16 @@ module ActiveMetric
 
   class Sum < Stat
     def calculate(measurement)
-      self.value +=  measurement.send(self.property)
+      self.value += measurement.send(self.property)
     end
   end
 
   class Eightieth < Stat
     def calculate(measurement)
     end
+
     def complete
-      self.value = subject.reservoir.calculate_percentile(0.8,self.property)
+      self.value = subject.reservoir.calculate_percentile(0.8, self.property)
       super
     end
   end
@@ -95,8 +111,9 @@ module ActiveMetric
   class NinetyEighth < Stat
     def calculate(measurement)
     end
+
     def complete
-      self.value = subject.reservoir.calculate_percentile(0.98,self.property)
+      self.value = subject.reservoir.calculate_percentile(0.98, self.property)
       super
     end
   end
@@ -120,9 +137,9 @@ module ActiveMetric
   end
 
   class FalseCount < Stat
-      def calculate(measurement)
-        self.value +=1 unless measurement.send(self.property)
-      end
+    def calculate(measurement)
+      self.value +=1 unless measurement.send(self.property)
+    end
   end
 
 end
