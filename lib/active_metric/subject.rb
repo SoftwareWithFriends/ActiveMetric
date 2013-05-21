@@ -1,5 +1,6 @@
 module ActiveMetric
   class Subject
+    extend Mongoable
     include Mongoid::Document
     include Mongoid::Timestamps
     include GraphCalculation
@@ -11,6 +12,30 @@ module ActiveMetric
     field :name, :type => String
 
     index({:report_id => -1}, {:background => true})
+
+    def self.from_db(id, recursive = true)
+      subject = super
+      if recursive
+        self.attach_summary!(subject)
+      end
+      subject
+    end
+
+    def self.from_report(report_id, recursive = true)
+      subjects = self.from_parent_in_db("report_id", report_id).entries
+
+      if recursive
+        subjects.each do |subject|
+          self.attach_summary! subject
+        end
+      end
+
+      subjects
+    end
+
+    def self.attach_summary!(subject_hash)
+      subject_hash["summary"] = ActiveMetric::Sample.from_samplable(subject_hash["_id"])
+    end
 
     def method_missing(method, *args)
       self.class.send(:define_method, method.to_sym) { value_from_summary(method) }

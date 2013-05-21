@@ -20,6 +20,15 @@ module ActiveMetric
       assert_kind_of TestResponseCodes, sample.test_response_codes
     end
 
+    test "can lookup summary from db directly" do
+      subject = TestSubject.create
+      sample = TestSample.create(:samplable => subject)
+
+      sample_hash = TestSample.from_samplable(subject.id.to_s)
+      assert_equal sample.id.to_s, sample_hash["_id"].to_s
+      assert_equal 11, sample_hash["stats"].size
+    end
+
     test "samples spawned from samples contain seed measurement" do
       subject = TestSubject.new
 
@@ -37,7 +46,6 @@ module ActiveMetric
       assert_equal 4, new_sample.seed_measurement.timestamp
       assert_equal sample.latest_measurement, new_sample.seed_measurement
     end
-
 
     test "should have correct timestamp" do
       measurements = [TestMeasurement.new(:value => 10, :timestamp => 1),

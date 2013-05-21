@@ -1,12 +1,25 @@
 module ActiveMetric
   class Report
     include Mongoid::Document
+    extend Mongoable
 
     before_save :save_display_name
 
     field :display_name
 
     has_many :subjects, :class_name => "ActiveMetric::Subject", :dependent => :destroy
+
+    def self.from_db(id, recursive = true)
+      report = super
+      if recursive
+        self.attach_subjects!(report)
+      end
+      report
+    end
+
+    def self.attach_subjects!(report_hash)
+      report_hash["subjects"] = ActiveMetric::Subject.from_report(report_hash["_id"])
+    end
 
     def name
       "report"

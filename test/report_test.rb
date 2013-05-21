@@ -67,6 +67,24 @@ module ActiveMetric
       assert_equal "Overriden Display Name", report.display_name
     end
 
+    test "can get report from db" do
+      report = Report.create
+      report_from_db = Report.from_db(report.id.to_s)
+
+      assert_equal report.id.to_s, report_from_db["_id"].to_s
+
+    end
+
+    test "can attach subject to report" do
+      report = Report.create
+      subject = TestSubject.create report: report
+
+      report_from_db = Report.from_db(report.id.to_s)
+
+      assert_equal 1, report_from_db["subjects"].size
+      assert_equal subject.id.to_s, report_from_db["subjects"].first["_id"].to_s
+    end
+
 
 
   end

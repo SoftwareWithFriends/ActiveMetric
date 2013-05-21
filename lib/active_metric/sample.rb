@@ -2,6 +2,7 @@ module ActiveMetric
 
   class Sample
     include Mongoid::Document
+    extend Mongoable
 
     belongs_to :samplable, :polymorphic => true, index: true
 
@@ -16,6 +17,10 @@ module ActiveMetric
     field :measurement_count, :type => Integer, :default => 0
     field :sum, :type => Integer, :default => 0
     field :sample_index, :type => Integer
+
+    def self.from_samplable(samplable_id)
+      self.from_parent_in_db("samplable_id", samplable_id).one
+    end
 
     def initialize(attr = nil, options = nil, measurement = nil, index = 0)
       @seed_measurement = measurement
