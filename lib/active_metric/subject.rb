@@ -17,6 +17,12 @@ module ActiveMetric
       value_from_summary(method)
     end
 
+    def not_inherited_attributes
+      attributes.reject do |key|
+        Subject.fields.has_key? key
+      end
+    end
+
     def value_from_summary(method)
       ret_value = summary.send(method)
       if ret_value.is_a?(Stat)
