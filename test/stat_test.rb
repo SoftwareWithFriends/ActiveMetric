@@ -178,6 +178,13 @@ module ActiveMetric
       assert_equal expected_bucket, stat.value
     end
 
+    test "can calculate false percentage" do
+      stat = PercentFalse.new(:value, :calculabe => @sample)
+      values = [true, true, false, true]
+      test_stat(stat, values)
+      assert_equal 25, stat.value
+    end
+
 
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do

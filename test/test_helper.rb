@@ -33,6 +33,7 @@ module ActiveMetric
     stat :value, [:delta], axis: 1
     stat :value, [:speed], axis: 1
     stat :value, [:bucket], axis: 2
+    stat :value, [:percent_false], axis: 3
 
     custom_stat :test_count, Integer, 0, 1 do |measurement|
       self.value += 1
@@ -46,6 +47,7 @@ module ActiveMetric
     axis index: 0, label: "first axis"
     axis index: 1, label: "second axis"
     axis index: 2, label: "third axis"
+    axis index: 3, label: "fourth axis"
   end
 
   class TestSubject < Subject

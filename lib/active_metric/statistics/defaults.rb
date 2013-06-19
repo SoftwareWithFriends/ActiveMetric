@@ -36,7 +36,7 @@ module ActiveMetric
     def calculate(measurement)
       self.last = property_from(measurement)
       self.first ||= (property_from(calculable.seed_measurement) || self.last)
-      self.value = derivative_from_seed_measurement(first,last)
+      self.value = derivative_from_seed_measurement(first, last)
     end
 
   end
@@ -47,7 +47,7 @@ module ActiveMetric
 
     def calculate(measurement)
       self.count +=1
-      self.value = derivative_from_seed_measurement(0,count)
+      self.value = derivative_from_seed_measurement(0, count)
     end
   end
 
@@ -139,6 +139,18 @@ module ActiveMetric
   class FalseCount < Stat
     def calculate(measurement)
       self.value +=1 unless measurement.send(self.property)
+    end
+  end
+
+  class PercentFalse < Stat
+    field :failures, :type => Float, default: 0.0
+    field :total, :type => Float, default: 0.0
+
+    def calculate(measurement)
+      boolean = !! measurement.send(self.property)
+      self.total += 1
+      self.failures += 1 unless boolean
+      self.value = (failures / total) * 100
     end
   end
 

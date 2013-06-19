@@ -6,7 +6,7 @@ module ActiveMetric
     test "should have the correct stats by name" do
       subject = TestSubject.new
       sample = TestSample.new(:samplable => subject)
-      assert_equal 11, sample.stats.size
+      assert_equal 12, sample.stats.size
       assert_kind_of Min, sample.min_value
       assert_kind_of Mean, sample.mean_value
       assert_kind_of Max, sample.max_value
@@ -16,6 +16,7 @@ module ActiveMetric
       assert_kind_of Delta, sample.delta_value
       assert_kind_of Bucket, sample.bucket_value
       assert_kind_of Speed, sample.speed_value
+      assert_kind_of PercentFalse, sample.percent_false_value
       assert_kind_of TestCount, sample.test_count
       assert_kind_of TestResponseCodes, sample.test_response_codes
     end
