@@ -185,6 +185,16 @@ module ActiveMetric
       assert_equal 25, stat.value
     end
 
+    test "can calculate 80th percentile" do
+      stat = Eightieth.new(:value, :calculable => @sample)
+      values = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+      values.each_with_index do  |value, index|
+        @subject.update_subject_calculators TestMeasurement.new(:value => value, :timesteamp => values[index])
+      end
+      stat.complete
+      assert_equal 11, stat.value
+    end
+
 
     #this test is here for the user, not for automated tests
     #test "random distributions are good too" do
