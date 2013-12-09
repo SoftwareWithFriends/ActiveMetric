@@ -62,7 +62,30 @@ module ActiveMetric
       assert_equal [[2,4],[7,9]], gvm.series_for("max_value").data
     end
 
+    test "retrieving existing subject allows series data to be updated where it left off" do
+      report = Report.create
+      subject = TestSubject.create :report => report
 
+      14.times do |value|
+        subject.calculate TestMeasurement.new(:value => value, :timestamp => value)
+      end
+
+      subject.complete
+
+      gvm = subject.graph_view_model
+
+      assert_equal [[2,4],[7,9],[11,13]], gvm.series_for("max_value").data
+
+      same_subject = TestSubject.where(:report => report).first
+
+      same_subject.calculate TestMeasurement.new(:value => 14, :timestamp => 14)
+      same_subject.complete
+
+      same_gvm = same_subject.graph_view_model
+
+      same_subject.update_series_data
+      assert_equal [[2,4],[7,9],[11,13],[14,14]], same_gvm.series_for("max_value").data
+    end
 
   end
 end

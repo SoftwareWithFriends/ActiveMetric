@@ -85,8 +85,11 @@ module ActiveMetric
     end
 
     def current_sample
-      @current_sample ||= self.class.sample_type.new(:samplable => self,
-                                                     :interval => self.class.interval_length)
+      @current_sample ||= self.class.sample_type.new({:samplable => self,
+                                                      :interval => self.class.interval_length},
+                                                     {},
+                                                     nil,
+                                                     graph_view_model.size)
     end
 
     def self.sample_type
