@@ -29,7 +29,7 @@ module ActiveMetric
 
   class TestSample < Sample
     stat :value
-    stat :value, [:standard_deviation], axis: 1
+    stat :value, [:standard_deviation], axis: 1, approximation: "open"
     stat :value, [:delta], axis: 1
     stat :value, [:speed], axis: 1
     stat :value, [:bucket], axis: 2

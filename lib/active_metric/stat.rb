@@ -36,6 +36,10 @@ module ActiveMetric
       title.to_sym
     end
 
+    def self.approximation
+      nil
+    end
+
     #TODO Make custom classes namespaced to where they are being defined
     def self.create_custom_stat(name_of_stat, value_type, default, calculate_block)
       class_name = name_of_stat.to_s.camelcase

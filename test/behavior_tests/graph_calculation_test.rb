@@ -87,5 +87,21 @@ module ActiveMetric
       assert_equal [[2,4],[7,9],[11,13],[14,14]], same_gvm.series_for("max_value").data
     end
 
+    test "graph view model gets created with approximation as defined in stat then sample class" do
+      default_min_approximation = "low"
+      default_mean_approximation = "average"
+      default_approximation = "high"
+      test_sample_defined_approximation = "open"
+      report = Report.create
+      subject = TestSubject.create :report => report
+
+      gvm = subject.graph_view_model
+
+      assert_equal default_min_approximation, gvm.series_for("min_value").approximation
+      assert_equal default_mean_approximation, gvm.series_for("mean_value").approximation
+      assert_equal default_approximation, gvm.series_for("max_value").approximation
+      assert_equal test_sample_defined_approximation, gvm.series_for("standard_deviation_value").approximation
+    end
+
   end
 end

@@ -5,6 +5,10 @@ module ActiveMetric
     def calculate(measurement)
       self.value = [self.value, measurement.send(self.property)].min
     end
+
+    def self.approximation
+      "low"
+    end
   end
 
   class Max < Stat
@@ -25,6 +29,10 @@ module ActiveMetric
     def complete
       self.value = (self.sum.to_f / self.count)
       super
+    end
+
+    def self.approximation
+      "average"
     end
   end
 
